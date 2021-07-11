@@ -1,0 +1,1 @@
+Set-ExecutionPolicy Unrestricted -Scope CurrentUser -Force & npm install -g npm-windows-upgrade & npm-windows-upgrade & npm i & python -m pip install --upgrade pip && python .\reset.py
