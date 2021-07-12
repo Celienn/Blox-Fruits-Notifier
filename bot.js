@@ -30,6 +30,86 @@ exec("python \"c:/Users/Shadow/Desktop/Fruit Notifier/reset.py\"")
 
 var Interval = {count:0};
 var Page = {}
+Page["count"] = 0
+
+function addPage(func,num){
+    Page["count"] = Page["count"] + 1
+    Page[Page["count"]] = {"function":func,"num":num}   
+}
+
+addPage(function(msg){
+    msg.react("⬅️")
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"chop"))}})
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"spring"))}})
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"smoke"))}})
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"flame"))}})
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"ice"))}})
+        .then(() => {if(msg.deleted != true){msg.react("➡️")}})
+},5)
+
+addPage(function(msg){
+    msg.react("⬅️")
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"sand"))}})
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"dark"))}})
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"light"))}})
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"rubber"))}})
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"barrier"))}})
+        .then(() => {if(msg.deleted != true){msg.react("➡️")}})
+},5)
+
+addPage(function(msg){
+    msg.react("⬅️")
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"magma"))}})
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"quake"))}})
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"buddha"))}})
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"string"))}})
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"phoenix"))}})
+        .then(() => {if(msg.deleted != true){msg.react("➡️")}})
+},5)
+
+addPage(function(msg){
+    msg.react("⬅️")
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"rumble"))}})
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"paw"))}})
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"gravity"))}})
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"dough"))}})
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"venom"))}})
+        .then(() => {if(msg.deleted != true){msg.react("➡️")}})
+},5)
+
+addPage(function(msg){
+    msg.react("⬅️")
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"control"))}})
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"Dragon"))}})
+        .then(() => {if(msg.deleted != true){msg.react("➡️")}})
+},2)
+
+async function drawPage(index,message){
+    const num = Page[index]["num"];
+    const canvas = Canvas.createCanvas(1500, 1900);
+    const context = canvas.getContext('2d');
+    var img = await Canvas.loadImage(__dirname + '/Images/oldbg.jpg');
+    context.drawImage(img, 0, 0, canvas.width, canvas.height);
+    img = await Canvas.loadImage(__dirname + '/Images/logoo.png');
+    context.drawImage(img, canvas.width/6, -100, canvas.width/1.5, img.height*2);
+    context.font = '60px sans-serif';
+    context.fillStyle = '#000000';
+    for(let z = 0 ; z < num ; z++){
+        img = await Canvas.loadImage(__dirname + '/Images/' + fruits[z + ((index-1)*5)]["name"] + '.jpg');
+        context.drawImage(img, 100, 600 + (z * 250), 200, 200);
+        context.font = '60px sans-serif';
+        context.fillStyle = '#000000';
+        context.fillText(maj(fruits[z + ((index-1)*5)]["name"]), 325, 675 + (z * 250));
+        context.font = '60px sans-serif';
+        context.fillStyle = '#009602';
+        context.fillText(fruits[z + ((index-1)*5)]["price"] + "$", 350, 750+ (z * 250));
+    }
+    const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'find-' + index + '.png');
+    const msg = await message.channel.send(attachment)
+    Page[index]["function"](msg)
+    //message.delete()
+    return msg
+}
 
 function emoji(guild,name){
     if(guild == null){
@@ -68,7 +148,7 @@ client.on("message", async function (message) {
             });
         }
     }
-    if(message.author.id != "822510586466140181"){
+    if(message.author.id != client.user.id){
         if(message.content.startsWith(config.commandPrefix)){
             console.log("["+ message.createdAt.toString().split(" G")[0] + "] Claim | " + message.author.username + " (" + message.author.id + ") >> " + message.content);
             if(message.content.split(";")[1].split(" ")[0].toLocaleLowerCase()  == "check"){
@@ -154,240 +234,29 @@ client.on("message", async function (message) {
                 message.channel.send(stock)
             }
             if(message.content.split(";")[1].split(" ")[0].toLocaleLowerCase() == "find"){ 
-                const canvas = Canvas.createCanvas(1500, 1900);
-	            const context = canvas.getContext('2d');
-                var img = await Canvas.loadImage(__dirname + '/Images/oldbg.jpg');
-                context.drawImage(img, 0, 0, canvas.width, canvas.height);
-                img = await Canvas.loadImage(__dirname + '/Images/logoo.png');
-                context.drawImage(img, canvas.width/6, -100, canvas.width/1.5, img.height*2);
-                context.font = '60px sans-serif';
-                context.fillStyle = '#000000';
-                for(let z = 0 ; z < 5 ; z++){
-                    img = await Canvas.loadImage(__dirname + '/Images/' + fruits[z]["name"] + '.jpg');
-                    context.drawImage(img, 100, 600 + (z * 250), 200, 200);
-                    context.font = '60px sans-serif';
-                    context.fillStyle = '#000000';
-	                context.fillText(maj(fruits[z]["name"]), 325, 675 + (z * 250));
-                    context.font = '60px sans-serif';
-                     context.fillStyle = '#009602';
-                    context.fillText(fruits[z]["price"] + "$", 350, 750+ (z * 250));
-                }
-                const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'find-1.png');
-                const msg = await message.channel.send(attachment)
-                //message.delete()
-                msg.react("⬅️")
-                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"chop"))}})
-                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"spring"))}})
-                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"smoke"))}})
-                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"flame"))}})
-                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"ice"))}})
-                    .then(() => {if(msg.deleted != true){msg.react("➡️")}})
                 const author = message.author
-                if(message.content.split(";")[1].split(" ")[1].toLocaleLowerCase()){
-                    Page[msg.id] = message.content.split(";")[1].split(" ")[1].toLocaleLowerCase()
+                if(typeof parseInt(message.content.split(";")[1].split(" ")[1]) != undefined){
+                    Page[message.id] = parseInt(message.content.split(";")[1].split(" ")[1])
                 }else{
-                    Page[msg.id] = 0
+                    Page[message.id] = 1
                 }
+                var msg = await drawPage(Page[message.id],message)
                 client.on('messageReactionAdd', async (reaction, user) => {
                     if(user.id == author.id){
                         if(reaction.emoji.name == '➡️' || reaction.emoji.name == '⬅️'){
                             if(reaction.emoji.name == '➡️'){
-                                Page[reaction.message.id] = Page[reaction.message.id] + 1
+                                Page[message.id] = Page[message.id] + 1
                             }else{
-                                Page[reaction.message.id] = Page[reaction.message.id] - 1
+                                Page[message.id] = Page[message.id] - 1
                             }
-                            if(Page[reaction.message.id] == 5){
-                                Page[reaction.message.id] = 0
+                            if(Page[message.id] == Page["count"] + 1){
+                                Page[message.id] = 1
                             }
-                            if(Page[reaction.message.id] == -1){
-                                Page[reaction.message.id] = 4
+                            if(Page[message.id] == 0){
+                                Page[message.id] = Page["count"]
                             }
-                            if(Page[reaction.message.id] == 0){
-                                const canvas = Canvas.createCanvas(1500, 1900);
-                                const context = canvas.getContext('2d');
-                                var img = await Canvas.loadImage(__dirname + '/Images/oldbg.jpg');
-                                context.drawImage(img, 0, 0, canvas.width, canvas.height);
-                                img = await Canvas.loadImage(__dirname + '/Images/logoo.png');
-                                context.drawImage(img, canvas.width/6, -100, canvas.width/1.5, img.height*2);
-                                context.font = '60px sans-serif';
-                                context.fillStyle = '#000000';
-                                for(let z = 0 ; z < 5 ; z++){
-                                    img = await Canvas.loadImage(__dirname + '/Images/' + fruits[z]["name"] + '.jpg');
-                                    context.drawImage(img, 100, 600 + (z * 250), 200, 200);
-                                    context.font = '60px sans-serif';
-                                    context.fillStyle = '#000000';
-                                    function maj(name){
-                                        var output = name.split("")[0].toLocaleUpperCase()
-                                        for(let z = 0 ; z < name.split("").length - 1 ; z++){
-                                            output = output + name.split("")[z+1]
-                                        }
-                                        return output
-                                    }
-                                    context.fillText(maj(fruits[z]["name"]), 325, 675 + (z * 250));
-                                    context.font = '60px sans-serif';
-                                    context.fillStyle = '#009602';
-                                    context.fillText(fruits[z]["price"] + "$", 350, 750+ (z * 250));
-                                }
-                                const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'find-1.png');
-                                const msg = await message.channel.send(attachment)
-                                Page[msg.id] = Page[reaction.message.id]
-                                reaction.message.delete()
-                                msg.react(emoji(msg.guild,"chop"))
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"spring"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"smoke"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"flame"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"ice"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react("➡️")}})
-                            }
-                            if(Page[reaction.message.id] == 1){
-                                const canvas = Canvas.createCanvas(1500, 1900);
-                                const context = canvas.getContext('2d');
-                                var img = await Canvas.loadImage(__dirname + '/Images/oldbg.jpg');
-                                context.drawImage(img, 0, 0, canvas.width, canvas.height);
-                                img = await Canvas.loadImage(__dirname + '/Images/logoo.png');
-                                context.drawImage(img, canvas.width/6, -100, canvas.width/1.5, img.height*2);
-                                context.font = '60px sans-serif';
-                                context.fillStyle = '#000000';
-                                for(let z = 0 ; z < 5 ; z++){
-                                    img = await Canvas.loadImage(__dirname + '/Images/' + fruits[z+5]["name"] + '.jpg');
-                                    context.drawImage(img, 100, 600 + (z * 250), 200, 200);
-                                    context.font = '60px sans-serif';
-                                    context.fillStyle = '#000000';
-                                    function maj(name){
-                                        var output = name.split("")[0].toLocaleUpperCase()
-                                        for(let z = 0 ; z < name.split("").length - 1 ; z++){
-                                            output = output + name.split("")[z+1]
-                                        }
-                                        return output
-                                    }
-                                    context.fillText(maj(fruits[z+5]["name"]), 325, 675 + (z * 250));
-                                    context.font = '60px sans-serif';
-                                    context.fillStyle = '#009602';
-                                    context.fillText(fruits[z+5]["price"] + "$", 350, 750+ (z * 250));
-                                }
-                                const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'find-1.png');
-                                const msg = await message.channel.send(attachment)
-                                Page[msg.id] = Page[reaction.message.id]
-                                reaction.message.delete()
-                                msg.react("⬅️")
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"sand"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"dark"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"light"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"rubber"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"barrier"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react("➡️")}})
-                            } 
-                            if(Page[reaction.message.id] == 2){
-                                const canvas = Canvas.createCanvas(1500, 1900);
-                                const context = canvas.getContext('2d');
-                                var img = await Canvas.loadImage(__dirname + '/Images/oldbg.jpg');
-                                context.drawImage(img, 0, 0, canvas.width, canvas.height);
-                                img = await Canvas.loadImage(__dirname + '/Images/logoo.png');
-                                context.drawImage(img, canvas.width/6, -100, canvas.width/1.5, img.height*2);
-                                context.font = '60px sans-serif';
-                                context.fillStyle = '#000000';
-                                for(let z = 0 ; z < 5 ; z++){
-                                    img = await Canvas.loadImage(__dirname + '/Images/' + fruits[z+10]["name"] + '.jpg');
-                                    context.drawImage(img, 100, 600 + (z * 250), 200, 200);
-                                    context.font = '60px sans-serif';
-                                    context.fillStyle = '#000000';
-                                    function maj(name){
-                                        var output = name.split("")[0].toLocaleUpperCase()
-                                        for(let z = 0 ; z < name.split("").length - 1 ; z++){
-                                            output = output + name.split("")[z+1]
-                                        }
-                                        return output
-                                    }
-                                    context.fillText(maj(fruits[z+10]["name"]), 325, 675 + (z * 250));
-                                    context.font = '60px sans-serif';
-                                    context.fillStyle = '#009602';
-                                    context.fillText(fruits[z+10]["price"] + "$", 350, 750+ (z * 250));
-                                }
-                                const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'find-1.png');
-                                const msg = await message.channel.send(attachment)
-                                Page[msg.id] = Page[reaction.message.id]
-                                reaction.message.delete()
-                                msg.react("⬅️")
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"magma"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"quake"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"buddha"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"string"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"phoenix"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react("➡️")}})
-                            }   
-                            if(Page[reaction.message.id] == 3){
-                                const canvas = Canvas.createCanvas(1500, 1900);
-                                const context = canvas.getContext('2d');
-                                var img = await Canvas.loadImage(__dirname + '/Images/oldbg.jpg');
-                                context.drawImage(img, 0, 0, canvas.width, canvas.height);
-                                img = await Canvas.loadImage(__dirname + '/Images/logoo.png');
-                                context.drawImage(img, canvas.width/6, -100, canvas.width/1.5, img.height*2);
-                                context.font = '60px sans-serif';
-                                context.fillStyle = '#000000';
-                                for(let z = 0 ; z < 5 ; z++){
-                                    img = await Canvas.loadImage(__dirname + '/Images/' + fruits[z+15]["name"] + '.jpg');
-                                    context.drawImage(img, 100, 600 + (z * 250), 200, 200);
-                                    context.font = '60px sans-serif';
-                                    context.fillStyle = '#000000';
-                                    function maj(name){
-                                        var output = name.split("")[0].toLocaleUpperCase()
-                                        for(let z = 0 ; z < name.split("").length - 1 ; z++){
-                                            output = output + name.split("")[z+1]
-                                        }
-                                        return output
-                                    }
-                                    context.fillText(maj(fruits[z+15]["name"]), 325, 675 + (z * 250));
-                                    context.font = '60px sans-serif';
-                                    context.fillStyle = '#009602';
-                                    context.fillText(fruits[z+15]["price"] + "$", 350, 750+ (z * 250));
-                                }
-                                const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'find-1.png');
-                                const msg = await message.channel.send(attachment)
-                                Page[msg.id] = Page[reaction.message.id]
-                                reaction.message.delete()
-                                msg.react("⬅️")
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"rumble"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"paw"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"gravity"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"dough"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"venom"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react("➡️")}})
-                            }
-                            if(Page[reaction.message.id] == 4){
-                                const canvas = Canvas.createCanvas(1500, 1900);
-                                const context = canvas.getContext('2d');
-                                var img = await Canvas.loadImage(__dirname + '/Images/oldbg.jpg');
-                                context.drawImage(img, 0, 0, canvas.width, canvas.height);
-                                img = await Canvas.loadImage(__dirname + '/Images/logoo.png');
-                                context.drawImage(img, canvas.width/6, -100, canvas.width/1.5, img.height*2);
-                                context.font = '60px sans-serif';
-                                context.fillStyle = '#000000';
-                                for(let z = 0 ; z < 2 ; z++){
-                                    img = await Canvas.loadImage(__dirname + '/Images/' + fruits[z+20]["name"] + '.jpg');
-                                    context.drawImage(img, 100, 600 + (z * 250), 200, 200);
-                                    context.font = '60px sans-serif';
-                                    context.fillStyle = '#000000';
-                                    function maj(name){
-                                        var output = name.split("")[0].toLocaleUpperCase()
-                                        for(let z = 0 ; z < name.split("").length - 1 ; z++){
-                                            output = output + name.split("")[z+1]
-                                        }
-                                        return output
-                                    }
-                                    context.fillText(maj(fruits[z+20]["name"]), 325, 675 + (z * 250));
-                                    context.font = '60px sans-serif';
-                                    context.fillStyle = '#009602';
-                                    context.fillText(fruits[z+20]["price"] + "$", 350, 750+ (z * 250));
-                                }
-                                const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'find-1.png');
-                                const msg = await message.channel.send(attachment)
-                                Page[msg.id] = Page[reaction.message.id]
-                                reaction.message.delete()
-                                msg.react("⬅️")
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"control"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"Dragon"))}})
-                                    .then(() => {if(msg.deleted != true){msg.react("➡️")}})
-                            }                             
+                            msg.delete()
+                            msg = await drawPage(Page[message.id],message)
                         }else{
                             function maj(name){
                                 var output = name.split("")[0].toLocaleUpperCase()
@@ -575,16 +444,3 @@ client.once('ready', () => {
 client.on('error', console.error);
 
 client.login(config.BOT_TOKEN);
-
-//var fields = {}
-//for (let z = 0; z < fruits.length; z++) {
-//    fields[z] = {name : fruits[z]["name"] , value: fruits[z]["price"], inline: true}
-//}
-//const exampleEmbed = new Discord.MessageEmbed()
-//    .setColor('#0099ff')
-//    .setTitle('Unidentified Fruit')
-//    .setAuthor(config.BOT_NAME, client.user.displayAvatarURL())
-//    .setDescription("Le fruit demander est introuvable .")
-//    .addFields(fields)
-//    .setTimestamp();
-//message.channel.send(exampleEmbed);
