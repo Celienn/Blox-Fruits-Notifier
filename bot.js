@@ -223,7 +223,7 @@ client.on("message", async function (message) {
             }
             if(message.content.split(";")[1].split(" ")[0].toLocaleLowerCase() == "find"){ 
                 const author = message.author
-                if(typeof parseInt(message.content.split(";")[1].split(" ")[1]) != undefined){
+                if(message.content.split(";")[1].split(" ")[1] != undefined & !(parseInt(message.content.split(";")[1].split(" ")[1]) < 1) & !(parseInt(message.content.split(";")[1].split(" ")[1]) > Page["count"]) & parseInt(message.content.split(";")[1].split(" ")[1]).toString() != "NaN"){
                     Page[message.id] = parseInt(message.content.split(";")[1].split(" ")[1])
                 }else{
                     Page[message.id] = 1
