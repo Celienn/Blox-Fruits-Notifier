@@ -1,7 +1,7 @@
 {
     "BOT_NAME": "Fruit Notifier",
     "BOT_TOKEN": "",
-    "BOT_SERVER_ID": 679069650662719489,
+    "DEFAULT_SERVER": 679069650662719489,
     "commandPrefix": ";", 
 	"owner": 331813688283496468
 }

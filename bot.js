@@ -112,12 +112,8 @@ async function drawPage(index,message){
 }
 
 function emoji(guild,name){
-    if(guild == null){
-        const baseGuild = client.guilds.cache.get("679069650662719489");
-        return baseGuild.emojis.cache.find(emoji => emoji.name === name);
-    }else{
-        return guild.emojis.cache.find(emoji => emoji.name === name);
-    }
+    const defaultGuild = client.guilds.cache.get(config.DEFAULT_SERVER);
+    return defaultGuild.emojis.cache.find(emoji => emoji.name === name);
 }
 
 function maj(name){
@@ -138,14 +134,6 @@ client.on("message", async function (message) {
     if(Data["guilds"][message.guild] != null){
         if(Data["guilds"][message.guild.id] == undefined){
             Data["guilds"][message.guild.id] = {"requests":{},"userdata":[]};
-            fs.writeFile("data.json", JSON.stringify(Data), 'utf8', function (err) {});
-            fruits.forEach(element => {
-                if(element["name"] == "dragon"){
-                    message.guild.emojis.create('http://90.46.43.219/?' + element["name"] + '.jpg', "Dragon")
-                }else{
-                    message.guild.emojis.create('http://90.46.43.219/?' + element["name"] + '.jpg', element["name"])
-                }
-            });
         }
     }
     if(message.author.id != client.user.id){
@@ -431,9 +419,9 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 
 client.once('ready', () => {
     console.log(config.BOT_NAME + ` logged !`);
-    client.user.setActivity(";find")
+    client.user.setActivity(";find <page>")
     exec("python \"c:/Users/Shadow/Desktop/Fruit Notifier/reset.py\"")
-    refreshStock()
+    //refreshStock()
     Interval["count"] = Interval["count"] + 1;
     const index = Interval["count"];
     Interval[index] = setInterval(() => {
