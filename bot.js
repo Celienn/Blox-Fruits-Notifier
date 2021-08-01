@@ -12,10 +12,8 @@ function sleep(ms) {
 }
 
 // A Faire : 
-// Emoji sur tout les servs et du coup ne plus les upload quand le bot join un nouveau srv
 // Data par user et plus data par user par serveur 
 // quand find suprimé l'ancien pour éviter que le bot crash
-// quand flèche sur le find avant que le bot ai mit toute les réaction bot crash donc a fix ( pour fix utilisé .then())
 // dans le find quand un fruit et en stock l'affché a droite du fruit dans le canvas 
 
 fruits = [{"price":"30,000","name":"chop"},{"price":"60,000","name":"spring"},{"price":"100,000","name":"smoke"},{"price":"250,000","name":"flame"},
