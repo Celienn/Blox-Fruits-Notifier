@@ -16,12 +16,14 @@ function sleep(ms) {
 // quand find suprimé l'ancien pour éviter que le bot crash
 // dans le find quand un fruit et en stock l'affché a droite du fruit dans le canvas 
 
-fruits = [{"price":"30,000","name":"chop"},{"price":"60,000","name":"spring"},{"price":"80  ,000","name":"kilo"},{"price":"100,000","name":"smoke"},{"price":"180,000","name":"spin"},
-          {"price":"250,000","name":"flame"},{"price":"300,000","name":"falcon"},{"price":"350,000","name":"ice"},{"price":"420,000","name":"sand"},{"price":"500,000","name":"dark"},
-          {"price":"550,000","name":"diamond"},{"price":"650,000","name":"light"},{"price":"700,000","name":"love"},{"price":"750,000","name":"rubber"},{"price":"800,000","name":"barrier"},
-          {"price":"850,000","name":"magma"},{"price":"950,000","name":"door"},{"price":"1,000,000","name":"quake"},{"price":"1,200,000","name":"buddha"},{"price":"1,500,000","name":"string"},
-          {"price":"1,800,000","name":"phoenix"},{"price":"2,100,000","name":"rumble"},{"price":"2,300,000","name":"paw"},{"price":"2,500,000","name":"gravity"},
-          {"price":"2,800,000","name":"dough"},{"price":"3,000,000","name":"venom"},{"price":"3,200,000","name":"control"},{"price":"3,500,000","name":"dragon"}  
+fruits = [{"price":"30,000","name":"chop"},{"price":"60,000","name":"spring"},{"price":"80,000","name":"kilo"},{"price":"100,000","name":"smoke"},
+          {"price":"180,000","name":"spin"},{"price":"250,000","name":"flame"},{"price":"300,000","name":"falcon"},{"price":"350,000","name":"ice"},
+          {"price":"420,000","name":"sand"},{"price":"500,000","name":"dark"},{"price":"550,000","name":"revive"},{"price":"550,000","name":"diamond"},
+          {"price":"650,000","name":"light"},{"price":"700,000","name":"love"},{"price":"750,000","name":"rubber"},{"price":"800,000","name":"barrier"},
+          {"price":"850,000","name":"magma"},{"price":"950,000","name":"door"},{"price":"1,000,000","name":"quake"},{"price":"1,200,000","name":"buddha"},
+          {"price":"1,500,000","name":"string"},{"price":"1,800,000","name":"phoenix"},{"price":"2,100,000","name":"rumble"},{"price":"2,300,000","name":"paw"},
+          {"price":"2,500,000","name":"gravity"},{"price":"2,800,000","name":"dough"},{"price":"2,900,000","name":"shadow"},{"price":"3,000,000","name":"venom"},
+          {"price":"3,200,000","name":"control"},{"price":"3,500,000","name":"dragon"}
         ]
 
 exec("python \"c:/Users/Shadow/Desktop/Fruit Notifier/reset.py\"")  
@@ -57,37 +59,39 @@ addPage(function(msg){
 
 addPage(function(msg){
     msg.react("⬅️")
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"revive"))}})
         .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"diamond"))}})
         .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"light"))}})
         .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"love"))}})
         .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"rubber"))}})
-        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"barrier"))}})
         .then(() => {if(msg.deleted != true){msg.react("➡️")}})
 },5)
 
 addPage(function(msg){
     msg.react("⬅️")
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"barrier"))}})
         .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"magma"))}})
         .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"door"))}})
         .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"quake"))}})
         .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"buddha"))}})
-        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"string"))}})
         .then(() => {if(msg.deleted != true){msg.react("➡️")}})
 },5)
 
 addPage(function(msg){
     msg.react("⬅️")
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"string"))}})
         .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"phoenix"))}})
         .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"rumble"))}})
         .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"paw"))}})
         .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"gravity"))}})
-        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"dough"))}})
         .then(() => {if(msg.deleted != true){msg.react("➡️")}})
 },5)
 
 
 addPage(function(msg){
     msg.react("⬅️")
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"dough"))}})
+        .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"shadow"))}})
         .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"venom"))}})
         .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"control"))}})
         .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"Dragon"))}})
@@ -105,7 +109,7 @@ async function drawPage(index,message){
     context.font = '60px sans-serif';
     context.fillStyle = '#000000';
     for(let z = 0 ; z < num ; z++){
-        img = await Canvas.loadImage(__dirname + '/Images/' + fruits[z + ((index-1)*5)]["name"] + '.jpg');
+        img = await Canvas.loadImage(__dirname + '/Images/' + fruits[z + ((index-1)*5)]["name"] + '.png');
         context.drawImage(img, 100, 600 + (z * 250), 200, 200);
         context.font = '60px sans-serif';
         context.fillStyle = '#000000';
