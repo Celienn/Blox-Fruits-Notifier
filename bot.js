@@ -96,7 +96,7 @@ addPage(function(msg){
         .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"control"))}})
         .then(() => {if(msg.deleted != true){msg.react(emoji(msg.guild,"Dragon"))}})
         .then(() => {if(msg.deleted != true){msg.react("➡️")}})
-},3)
+},5)
 
 async function drawPage(index,message){
     const num = Page[index]["num"];
