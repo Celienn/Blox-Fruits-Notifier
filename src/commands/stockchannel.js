@@ -20,7 +20,7 @@ module.exports = {
                 if (gldData) {
                     if (gldData.stockChannel != interaction.channelId & (gldData.stockChannel & gldData.stockMessageId)) {
                         // Not the best it would be better to delete the message afther the data base is updated
-                        // Isn't working 
+                        // Isn't working  
                         const message = await interaction.chennel.messages.fetch(gldData.stockMessageId);
                         message.delete().catch(console.error)
 
