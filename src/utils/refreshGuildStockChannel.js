@@ -20,7 +20,7 @@ module.exports = async (client, guildId) => {
         var messageId = gldData.stockMessageId;
 
         const currStock = await stock();
-        
+         
         const fruitFields = [];
         for (const fruit of currStock) {
             fruitFields.push({
