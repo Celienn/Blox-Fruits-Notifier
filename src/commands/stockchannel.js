@@ -1,10 +1,11 @@
 const { ApplicationCommandOptionType } = require("discord.js");
 const GuildData = require("../models/GuildData");
+const refreshStockChannel = require("../utils/refreshGuildStockChannel");
 
 module.exports = {
     name: 'stockchannel',
     description: 'Set the channel where the current blox fruit stock will be shown',
-    adminOnly: true,
+    default_member_permissions: "0",
     callback: async (client, interaction) => {
         try {
             
@@ -17,6 +18,14 @@ module.exports = {
                 var gldData = await GuildData.findOne(query);
 
                 if (gldData) {
+                    if (gldData.stockChannel != interaction.channelId & (gldData.stockChannel & gldData.stockMessageId)) {
+                        // Not the best it would be better to delete the message afther the data base is updated
+                        // Isn't working 
+                        const message = await interaction.chennel.messages.fetch(gldData.stockMessageId);
+                        message.delete().catch(console.error)
+
+                        gldData.stockMessageId = "";
+                    }
                     // Add the new fruit to the user data 
                     gldData.stockChannel = interaction.channelId;
 
@@ -36,11 +45,13 @@ module.exports = {
                 console.log(`Error: ${error}`)
             }
 
-            const response = await interaction.reply("The new stock channel was succesfully set.");
+            interaction.reply({
+                content: "The new stock channel was succesfully set.",
+                ephemeral: true,
+            });
 
-            setTimeout(() =>{
-                response.delete();
-            },2000);
+            refreshStockChannel(client, interaction.guild.id);
+
         } catch (error) {
             console.log(`Error: ${error}`);
         }

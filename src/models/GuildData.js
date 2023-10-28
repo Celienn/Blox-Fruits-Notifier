@@ -9,6 +9,11 @@ const guildSchema = new Schema({
         type: String,
         default: "",
         required: false,
+    },
+    stockMessageId : {
+        type: String,
+        default: "",
+        required: false,
     }
 })
 

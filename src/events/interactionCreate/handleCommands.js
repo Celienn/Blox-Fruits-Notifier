@@ -11,9 +11,9 @@ module.exports = async (client, interaction) => {
         );
         
         if (!commandObject) return
-
+   
         await commandObject.callback(client,interaction);
     } catch(error) {
-
+        console.log(`Error: ${error}`);
     }
 };
