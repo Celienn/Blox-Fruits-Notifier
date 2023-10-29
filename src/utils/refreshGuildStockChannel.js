@@ -3,6 +3,7 @@ const { EmbedBuilder } = require('discord.js');
 const fruitsValue = require("../utils/getDevilsFruitPrice")();
 const fruitsNames = Object.keys(fruitsValue);
 const stock = require("../utils/getCurrentStock");
+const timestamp = require("../utils/getStockTimestamp")
 
 module.exports = async (client, guildId) => {
 
@@ -29,13 +30,20 @@ module.exports = async (client, guildId) => {
                 inline: true,
             });
         }
-        console.log([{name:"test",value:"test",inline:true}])
-        console.log(fruitFields)
+
         const embed = new EmbedBuilder()
             .setTitle('Current stock')
             .setColor('#07eded')
-        
+            .setThumbnail('https://cdn.discordapp.com/attachments/679071256305205258/1168065315217866822/Blox_Fruits.png')
+            
+        fruitFields.push({
+            name: ' ',
+            value: `Next refresh <t:${timestamp()}:R>`,
+            inline: false,
+        })
+
         embed.addFields(fruitFields);
+
         try{
             // Modify message
             const message  = await channel.messages.fetch(messageId);
@@ -45,9 +53,9 @@ module.exports = async (client, guildId) => {
             const message = await channel.send({ embeds: [embed] });
             messageId = message.id;
         }
-
+        
         gldData.stockMessageId = messageId;
-        console.log(messageId)
+
         await gldData.save().catch((error) => {
             console.log(`Error while updating data :${error}`);
             return;
