@@ -1,6 +1,5 @@
-const { ApplicationCommandOptionType } = require("discord.js");
 const Canvas = require('canvas')
-const fruits = require("../utils/getDevilsFruitPrice")();
+const fruits = require("../utils/getDevilsFruitPrice");
 const stock = require("../utils/getCurrentStock");
 
 module.exports = {

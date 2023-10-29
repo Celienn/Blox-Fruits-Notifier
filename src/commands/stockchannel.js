@@ -1,4 +1,3 @@
-const { ApplicationCommandOptionType } = require("discord.js");
 const GuildData = require("../models/GuildData");
 const refreshStockChannel = require("../utils/refreshGuildStockChannel");
 
@@ -11,7 +10,7 @@ module.exports = {
 
             // Search in  the data base if an entry already exist for the current guild 
             const query = {
-                guildId: interaction.guild.id,
+                id: interaction.guild.id,
             }
 
             try {
@@ -33,7 +32,7 @@ module.exports = {
                 }else {
                     // Create an entry for the user in the data base
                     gldData = new GuildData({
-                        guildId: interaction.guild.id,
+                        id: interaction.guild.id,
                         stockChannel: interaction.channelId,
                     })
                 }

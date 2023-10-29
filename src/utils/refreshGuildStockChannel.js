@@ -1,14 +1,14 @@
 const GuildData = require("../models/GuildData");
 const { EmbedBuilder } = require('discord.js');
-const fruitsValue = require("../utils/getDevilsFruitPrice")();
+const fruitsValue = require("../utils/getDevilsFruitPrice");
 const fruitsNames = Object.keys(fruitsValue);
-const stock = require("../utils/getCurrentStock");
-const timestamp = require("../utils/getStockTimestamp")
+const stock = require("./getCurrentStock");
+const nextStock = require("./getStockTime")
 
 module.exports = async (client, guildId) => {
 
     const query = {
-        guildId: guildId,
+        id: guildId,
     }
 
     try {
@@ -38,7 +38,7 @@ module.exports = async (client, guildId) => {
             
         fruitFields.push({
             name: ' ',
-            value: `Next refresh <t:${timestamp()}:R>`,
+            value: `Next refresh <t:${nextStock.nextTimestamp()}:R>`,
             inline: false,
         })
 
@@ -60,7 +60,6 @@ module.exports = async (client, guildId) => {
             console.log(`Error while updating data :${error}`);
             return;
         });
-        console.log("new guild data saved")
     } catch(error) {
         console.log(`Error: ${error}`)
     }

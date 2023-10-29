@@ -1,5 +1,5 @@
 const axios = require('axios');
-const fruits = require("../utils/getDevilsFruitPrice")();
+const fruits = require("./getDevilsFruitPrice");
 const fruitNames = Object.keys(fruits);
 
 const url = 'https://blox-fruits.fandom.com/wiki/Blox_Fruits_"Stock"';

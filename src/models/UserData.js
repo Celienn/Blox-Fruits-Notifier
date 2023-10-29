@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 
 const notifySchema = new Schema({
-    userId: {
+    id: {
         type: String,
         required: true,
     },

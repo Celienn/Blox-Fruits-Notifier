@@ -1,7 +1,7 @@
 const { ApplicationCommandOptionType } = require("discord.js");
 const UserData = require("../models/UserData");
 
-const fruits = require("../utils/getDevilsFruitPrice")();
+const fruits = require("../utils/getDevilsFruitPrice");
 const fruitsNames = Object.keys(fruits);
 const excludeList = "chop,spring,bomb,smoke,flame,ice,sand,dark,revive,diamond"
 const choices = []
@@ -34,7 +34,7 @@ module.exports = {
 
         // Search in  the data base if an entry already exist for the current user 
         const query = {
-            userId: interaction.user.id
+            id: interaction.user.id
         }
 
         try {
@@ -47,7 +47,7 @@ module.exports = {
             }else {
                 // Create an entry for the user in the data base
                 usrData = new UserData({
-                    userId: interaction.user.id,
+                    id: interaction.user.id,
                     fruits: [fruit],
                 })
             }
