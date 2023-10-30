@@ -3,7 +3,7 @@ const UserData = require("../models/UserData");
 
 const fruits = require("../utils/getDevilsFruitPrice");
 const fruitsNames = Object.keys(fruits);
-const excludeList = "chop,spring,bomb,smoke,flame,ice,sand,dark,revive,diamond"
+const excludeList = "chop,spring,bomb,smoke,spike,flame,falcon,sand,revive,diamond"
 const choices = []
 
 for (const fruit of fruitsNames) {
@@ -41,6 +41,12 @@ module.exports = {
             var usrData = await UserData.findOne(query);
 
             if (usrData) {
+                for (usrFruit of usrData.fruits) {
+                    if (usrFruit == fruit) {
+                        interaction.reply("Fruit already added to your notify list");
+                        return;
+                    }
+                }
                 // Add the new fruit to the user data 
                 usrData.fruits.push(fruit);
 
@@ -59,7 +65,8 @@ module.exports = {
         } catch(error) {
             console.log(`Error: ${error}`)
         }
-
-        interaction.reply(usrData.fruits.join(', '));
+        
+        const reply = (usrData.fruits.join(', ') == '') ? "Your list is empty" : usrData.fruits.join(', ');
+        interaction.reply(reply);
     },
 }

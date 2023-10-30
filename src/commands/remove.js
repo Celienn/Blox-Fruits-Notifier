@@ -34,19 +34,19 @@ module.exports = {
 
         // Search in  the data base if an entry already exist for the current user 
         const query = {
-            userId: interaction.user.id
+            id: interaction.user.id
         }
 
         try {
             var usrData = await UserData.findOne(query);
             if (!usrData) {
-                interaction.reply("You didn't hava added any fruit yet."); 
+                interaction.reply("You didn't have added any fruit yet."); 
                 return;
             }
 
             // Search if the fruit is in the user data
             const fruitIndex = usrData.fruits.indexOf(fruit);
-            console.log(fruitIndex)
+
             if (fruitIndex == -1) {
                 interaction.reply(`${fruit} isn't in your notify list.`);
                 return;
@@ -63,7 +63,8 @@ module.exports = {
         } catch(error) {
             console.log(`Error: ${error}`)
         }
-
-        interaction.reply(usrData.fruits.join(', '));
+        
+        const reply = (usrData.fruits.join(', ') == '') ? "Your list is empty" : usrData.fruits.join(', ');
+        interaction.reply(reply);
     },
 }
