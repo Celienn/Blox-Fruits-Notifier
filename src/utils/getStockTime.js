@@ -18,18 +18,15 @@ module.exports = {
         const currentHour = now.getHours();
 
         for (const hour of refreshHours) {
-            if (currentHour < hour || hour == refreshHours[5]) {
+            if (currentHour < hour) {
                 now.setHours(hour,0,0,0);
-                if (hour == refreshHours[5]) {
-                    now.setDate(now.getDate() + 1);
-                    now.setHours(1,0,0,0);
-                }
-                return now.getTime() / 1000;
+                break;
             }
+            if (hour != refreshHours[5]) continue
+            now.setDate(now.getDate() + 1);
+            now.setHours(1,0,0,0);
         }
-
-        for (const hour of timesToTrack) {
-        timestamps.push(getNextTimestamp(hour));
-        }
+        
+        return now.getTime() / 1000;
     },
 };

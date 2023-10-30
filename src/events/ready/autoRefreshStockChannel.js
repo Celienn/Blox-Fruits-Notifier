@@ -51,7 +51,16 @@ function secondsToWait() {
 async function checkForNewStock(client) {
     const newStock = await getCurrStock();
 
-    if (currStock != newStock) {
+    let isDiff = false;
+    for (let i = 0 ; i < newStock.lenght ; i++){
+        if (currStock[i] != newStock[i]) {
+            isDiff = true;
+            break;
+        }
+    }
+    
+    if (isDiff) {
+        console.log(`new stock detected : ${currStock} & ${newStock} ; cond ${(currStock != newStock)}`);
         // New stock detected 
         currStock = newStock;
         refreshAllStockChannel(client);

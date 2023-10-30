@@ -15,6 +15,7 @@ module.exports = () => {
                     const fruitIsInStock = page.includes(`>${fruit}<`);
                     if (fruitIsInStock) currentStock.push(fruit);
                 }
+
                 resolve(currentStock);
             })
             .catch(error => {
