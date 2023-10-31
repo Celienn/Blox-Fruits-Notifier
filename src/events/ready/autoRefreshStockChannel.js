@@ -7,7 +7,7 @@ var currStock;
 
 (async () => {
     currStock = await getCurrStock();
-});
+})();
 
 async function refreshAllStockChannel(client) {
     try {
@@ -50,15 +50,19 @@ function secondsToWait() {
 
 async function checkForNewStock(client) {
     const newStock = await getCurrStock();
-
-    let isDiff = false;
-    for (let i = 0 ; i < newStock.lenght ; i++){
-        if (currStock[i] != newStock[i]) {
-            isDiff = true;
-            break;
-        }
-    }
     
+    let isDiff = false;
+    try{
+        for (let i = 0 ; i < newStock.length ; i++){
+            if (currStock[i] != newStock[i]) {
+                isDiff = true;
+                break;
+            }
+        }        
+    } catch(error){
+        console.error(error);
+    }
+
     if (isDiff) {
         console.log(`new stock detected : ${currStock} & ${newStock} ; cond ${(currStock != newStock)}`);
         // New stock detected 
@@ -68,6 +72,7 @@ async function checkForNewStock(client) {
         setTimeout(() => {checkForNewStock(client)},secondsToWait()*1000);
     }else {
         // Retry in one minute 
+        console.log("retrying")
         setTimeout(() => {checkForNewStock(client)},60000);
     }
 }
