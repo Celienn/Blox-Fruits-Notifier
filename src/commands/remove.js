@@ -3,7 +3,7 @@ const UserData = require("../models/UserData");
 
 const fruits = require("../utils/getDevilsFruitPrice");
 const fruitsNames = Object.keys(fruits);
-const excludeList = "chop,spring,bomb,smoke,flame,ice,sand,dark,revive,diamond"
+const excludeList = process.env.EXCLUDE_FRUITS
 const choices = []
 
 for (const fruit of fruitsNames) {

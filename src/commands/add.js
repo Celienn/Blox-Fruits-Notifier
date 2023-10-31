@@ -3,7 +3,7 @@ const UserData = require("../models/UserData");
 
 const fruits = require("../utils/getDevilsFruitPrice");
 const fruitsNames = Object.keys(fruits);
-const excludeList = "chop,spring,bomb,smoke,spike,flame,falcon,sand,revive,diamond"
+const excludeList = process.env.EXCLUDE_FRUITS
 const choices = []
 
 for (const fruit of fruitsNames) {
@@ -55,7 +55,7 @@ module.exports = {
                 usrData = new UserData({
                     id: interaction.user.id,
                     fruits: [fruit],
-                })
+                });
             }
             // Save the new data to the data base
             await usrData.save().catch((error) => {

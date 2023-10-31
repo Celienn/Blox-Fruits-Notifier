@@ -30,7 +30,7 @@ async function notifyPlayers(client) {
 
         for (const usrData of UsersData) {
             const user = client.users.cache.get(usrData.id);
-            if (!user || !usrData.fruits) continue
+            if (!user || !usrData.fruits || !usrData.notify) continue
             for (fruit of currStock) {
                 for (usrFruit of usrData.fruits){
                     if(usrFruit == fruit) user.send(`${fruit} is currently in stock`);

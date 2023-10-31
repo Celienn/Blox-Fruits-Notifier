@@ -9,6 +9,11 @@ const notifySchema = new Schema({
         type: Array,
         default: [],
         required: false,
+    },
+    notify: {
+        type: Boolean,
+        default: true,
+        required: false,
     }
 })
 
