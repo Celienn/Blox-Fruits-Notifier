@@ -34,4 +34,5 @@ module.exports = {
     spirit:     "3,400,000",
     dragon:     "3,500,000",
     leopard:    "5,000,000",
+    kitsune:    "8,000,000",
 };
