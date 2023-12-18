@@ -16,8 +16,7 @@ module.exports = {
             const reply = (usrData.fruits.join(', ') == '') ? "Your list is empty" : usrData.fruits.join(', ');
             interaction.reply(reply);
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
-
     },
 }

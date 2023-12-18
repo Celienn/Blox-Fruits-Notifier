@@ -15,6 +15,7 @@ async function refreshAllStockChannel(client) {
         if (!GuildsData) return;
 
         for (const gldData of GuildsData) {
+            if (!gldData) continue
             refreshStockChannel(client, gldData.id);
         }
 
@@ -28,12 +29,19 @@ async function notifyPlayers(client) {
         const UsersData = await UserData.find({})
         if (!UsersData) return;
 
+        usrDataLoop:
         for (const usrData of UsersData) {
             const user = client.users.cache.get(usrData.id);
-            if (!user || !usrData.fruits || !usrData.notify) continue
+            if (!user || !usrData.fruits || !usrData.notify) continue;
             for (fruit of currStock) {
                 for (usrFruit of usrData.fruits){
-                    if(usrFruit == fruit) user.send(`${fruit} is currently in stock`);
+                    if (usrFruit != fruit) continue;
+                    try{
+                        user.send(`${fruit} is currently in stock`)
+                    }catch (err) {
+                        // Bot probably blocked by the user
+                        continue usrDataLoop;
+                    }
                 }
             }
         }
@@ -62,6 +70,8 @@ async function checkForNewStock(client) {
     } catch(error){
         console.error(error);
     }
+
+    if(newStock == []) isDiff = false;
 
     if (isDiff) {
         console.log(`new stock detected : ${currStock} & ${newStock} ; cond ${(currStock != newStock)}`);

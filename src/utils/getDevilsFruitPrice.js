@@ -9,7 +9,7 @@ module.exports = {
     ice:        "350,000",
     sand:       "420,000",
     dark:       "500,000",
-    revive:     "550,000",
+    ghost:     "550,000",
     diamond:    "600,000",
     light:      "650,000",
     rubber:     "750,000",
@@ -34,4 +34,5 @@ module.exports = {
     spirit:     "3,400,000",
     dragon:     "3,500,000",
     leopard:    "5,000,000",
+    kitsune:    "8,000,000",
 };

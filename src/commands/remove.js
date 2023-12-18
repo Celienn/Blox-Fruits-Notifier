@@ -52,7 +52,7 @@ module.exports = {
                 return;
             }
 
-            // Remove the fruit from the user date
+            // Remove the fruit from the user data
             usrData.fruits.splice(fruitIndex,1);
 
             // Save the new data to the data base
