@@ -9,7 +9,7 @@ module.exports = () => {
 
     for (const commandFile of commandFiles) {
         const commandFunc = require(commandFile);
-        
+
         localCommands.push(commandFunc);
     }
 
