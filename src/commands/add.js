@@ -1,72 +1,110 @@
-const { ApplicationCommandOptionType } = require("discord.js");
+const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require("discord.js");
 const UserData = require("../models/UserData");
 
 const fruits = require("../utils/getDevilsFruitPrice");
-const fruitsNames = Object.keys(fruits);
 const excludeList = process.env.EXCLUDE_FRUITS
-const choices = []
+const fruitsNames = Object.keys(fruits);
+var choices = []
 
 for (const fruit of fruitsNames) {
     if (excludeList.includes(fruit)) continue
-    choices.push({
-        name: fruit.charAt(0).toUpperCase() + fruit.slice(1),
-        value: fruit,
-    })
+    choices.push(
+        new StringSelectMenuOptionBuilder()
+            .setLabel(fruit.charAt(0).toUpperCase() + fruit.slice(1))
+            .setValue(fruit)
+    );
 }
 
 choices.reverse();
 
-module.exports = {
-    name: 'add',
-    description: 'Be notified when a fruit is in stock',
-    options: [
-        {
-            name: 'fruit',
-            description: 'devil fruit you want to be notified of when it will be in stock',
-            type: ApplicationCommandOptionType.String,
-            required: true,
-            choices: choices,
-        }
-    ],
-    callback: async (client, interaction) => {
-        const fruit = interaction.options.get("fruit").value;
-        if (!fruit) return;
+const generateSelectMenu = (customChoices) => {
+    const select = new StringSelectMenuBuilder()
+        .setCustomId('addfruits')
+        .setPlaceholder('Your list is empty.')
+        .setMinValues(1)
+        .setMaxValues(choices.length)
+        .addOptions(customChoices);
 
-        // Search in  the data base if an entry already exist for the current user 
+    const row = new ActionRowBuilder().addComponents(select);
+    return { select, row };
+};
+
+module.exports = {
+    name: 'newadd',
+    description: 'Be notified when a fruit is in stock',
+    test: true,
+    callback: async (client, interaction) => {
+        
+        const customChoices = choices;
+
         const query = {
             id: interaction.user.id
         }
-
+        
         try {
             var usrData = await UserData.findOne(query);
+            if (!usrData || !usrData.fruits) return;
 
-            if (usrData) {
-                for (usrFruit of usrData.fruits) {
-                    if (usrFruit == fruit) {
-                        interaction.reply("Fruit already added to your notify list");
-                        return;
-                    }
+            for (const dataFruit of usrData.fruits) {
+                for (let i = 0 ; i < choices.length ; i++) {    
+                    if (choices[i].toJSON().label.toLowerCase() != dataFruit) continue;
+                    customChoices[i].setDefault(true);
                 }
-                // Add the new fruit to the user data 
-                usrData.fruits.push(fruit);
-
-            }else {
-                // Create an entry for the user in the data base
-                usrData = new UserData({
-                    id: interaction.user.id,
-                    fruits: [fruit],
-                });
             }
-            // Save the new data to the data base
-            await usrData.save().catch((error) => {
-                console.log(`Error while updating data :${error}`);
-                return;
-            });
-        } catch(error) {
-            console.log(`Error: ${error}`)
+        } catch (error) {
+            console.error(error);
+            interaction.reply({ content: "An error occurred.", ephemeral: true });
         }
-        
-        const reply = (usrData.fruits.join(', ') == '') ? "Your list is empty" : usrData.fruits.join(', ');
-        interaction.reply(reply);
+
+        const { select, row } = generateSelectMenu(customChoices);
+
+
+        const response = await interaction.reply({
+            content: '\ ',
+            components: [row],
+        });
+
+        const collectorFilter = i => i.user.id === interaction.user.id;
+
+        try{
+            const confirmation = await response.awaitMessageComponent({ filter: collectorFilter });
+
+            if (confirmation.customId === 'addfruits') {
+                // Search in  the data base if an entry already exist for the current user 
+                const query = {
+                    id: interaction.user.id
+                }
+
+                var usrData = await UserData.findOne(query);
+
+                if (usrData) {
+                    // Add selected fruits to the user data 
+                    usrData.fruits = confirmation.values;
+
+                }else {
+                    // Create an entry for the user in the data base
+                    usrData = new UserData({
+                        id: interaction.user.id,
+                        fruits: confirmation.values,
+                    });
+                }
+                // Save the new data to the data base
+                await usrData.save().catch((error) => {
+                    console.log(`Error while updating data :${error}`);
+                    return;
+                });
+
+                await confirmation.update('\ ');
+
+                response.edit({
+                    content: 'Change saved',
+                    components: [],
+                });
+                confirmation.message.react('✅');
+            }
+        } catch (error) {
+            console.error(error);
+            interaction.reply({ content: "An error occurred.", ephemeral: true });
+        }
     },
 }

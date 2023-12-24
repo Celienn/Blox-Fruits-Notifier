@@ -17,6 +17,18 @@ for (const fruit of fruitsNames) {
 
 choices.reverse();
 
+const generateSelectMenu = (customChoices) => {
+    const select = new StringSelectMenuBuilder()
+        .setCustomId('addfruits')
+        .setPlaceholder('Your list is empty.')
+        .setMinValues(1)
+        .setMaxValues(choices.length)
+        .addOptions(customChoices);
+
+    const row = new ActionRowBuilder().addComponents(select);
+    return { select, row };
+};
+
 module.exports = {
     name: 'newadd',
     description: 'Be notified when a fruit is in stock',
@@ -44,15 +56,8 @@ module.exports = {
             interaction.reply({ content: "An error occurred.", ephemeral: true });
         }
 
-        const select = new StringSelectMenuBuilder()
-			.setCustomId('addfruits')
-			.setPlaceholder('Your list is empty.')
-            .setMinValues(1)
-			.setMaxValues(choices.length)
-			.addOptions(customChoices);
+        const { select, row } = generateSelectMenu(customChoices);
 
-        const row = new ActionRowBuilder()
-            .addComponents(select);
 
         const response = await interaction.reply({
             content: '\ ',
@@ -89,7 +94,15 @@ module.exports = {
                     return;
                 });
 
-                confirmation.update('\ ');
+                await confirmation.update('\ ');
+
+                //TODO Show the new fruit list insted of "change saved"
+                //TODO Add emoji for each fruit and add it to the select menu
+
+                response.edit({
+                    content: 'Change saved',
+                    components: [],
+                });
                 confirmation.message.react('✅');
             }
         } catch (error) {
