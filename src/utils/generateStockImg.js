@@ -25,6 +25,9 @@ const rarityColor = {
     
 }
 
+// TODO Generate and upload the stock image only one time per stock 
+// TODO When more than 4 fruits create a new row of fruits
+
 module.exports = async (currStockArr) => {
     try {
         const width = 120 + (currStockArr.length-1)*90;
