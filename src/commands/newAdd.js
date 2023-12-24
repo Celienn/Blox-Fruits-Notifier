@@ -100,7 +100,7 @@ module.exports = {
                 //TODO Add emoji for each fruit and add it to the select menu
 
                 response.edit({
-                    content: 'Change saved',
+                    content: 'Changes saved',
                     components: [],
                 });
                 confirmation.message.react('✅');

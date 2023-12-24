@@ -97,7 +97,7 @@ module.exports = {
                 await confirmation.update('\ ');
 
                 response.edit({
-                    content: 'Change saved',
+                    content: 'Changes saved',
                     components: [],
                 });
                 confirmation.message.react('✅');
