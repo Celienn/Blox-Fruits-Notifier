@@ -1,7 +1,8 @@
 const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require("discord.js");
 const UserData = require("../models/UserData");
-
 const fruits = require("../utils/getDevilsFruitPrice");
+const emojis = require("../utils/getEmojis");
+
 const excludeList = process.env.EXCLUDE_FRUITS
 const fruitsNames = Object.keys(fruits);
 var choices = []
@@ -45,10 +46,13 @@ module.exports = {
             var usrData = await UserData.findOne(query);
             if (!usrData || !usrData.fruits) return;
 
-            for (const dataFruit of usrData.fruits) {
-                for (let i = 0 ; i < choices.length ; i++) {    
+            for (let i = 0 ; i < choices.length ; i++) {    
+                let emoji = await emojis(client,choices[i].toJSON().label.toLowerCase());
+                customChoices[i].setEmoji(emoji.id);
+                for (const dataFruit of usrData.fruits) {
                     if (choices[i].toJSON().label.toLowerCase() != dataFruit) continue;
                     customChoices[i].setDefault(true);
+                    break;
                 }
             }
         } catch (error) {
@@ -57,7 +61,6 @@ module.exports = {
         }
 
         const { select, row } = generateSelectMenu(customChoices);
-
 
         const response = await interaction.reply({
             content: '\ ',
