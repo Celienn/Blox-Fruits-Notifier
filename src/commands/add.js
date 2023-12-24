@@ -30,7 +30,7 @@ const generateSelectMenu = (customChoices) => {
 };
 
 module.exports = {
-    name: 'newadd',
+    name: 'add',
     description: 'Be notified when a fruit is in stock',
     callback: async (client, interaction) => {
         
