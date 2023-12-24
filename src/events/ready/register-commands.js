@@ -32,7 +32,7 @@ module.exports = () => {
             if (!testCommands.length) return ;
                 
             const test = await rest.put(
-                Routes.applicationGuildCommands(process.env.CLIENT_ID,process.env.DEFAULT_SERVER),
+                Routes.applicationGuildCommands(process.env.CLIENT_ID,process.env.DEFAULT_GUILD),
                 { body: testCommands },
             )
     
