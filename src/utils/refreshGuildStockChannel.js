@@ -1,5 +1,5 @@
 const GuildData = require("../models/GuildData");
-const { EmbedBuilder, MessageAttachment } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const fruitsValue = require("../utils/getDevilsFruitPrice");
 const stockImg = require("../utils/generateStockImg");
 const fruitsNames = Object.keys(fruitsValue);
