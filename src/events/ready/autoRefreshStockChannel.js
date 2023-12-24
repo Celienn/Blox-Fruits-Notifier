@@ -56,7 +56,7 @@ function secondsToWait() {
     return stock.nextTimestamp() - now;
 }
 
-async function checkForNewStock(client) {
+async function checkForNewStock(client,noretry=false) {
     const newStock = await getCurrStock();
     
     let isDiff = false;
@@ -74,16 +74,26 @@ async function checkForNewStock(client) {
     if(newStock == []) isDiff = false;
 
     if (isDiff) {
-        console.log(`new stock detected : ${currStock} & ${newStock} ; cond ${(currStock != newStock)}`);
+        console.log(`new stock detected : ${newStock} .}`);
         // New stock detected 
         currStock = newStock;
         refreshAllStockChannel(client);
-        notifyPlayers(client);
         setTimeout(() => {checkForNewStock(client)},secondsToWait()*1000);
+
+        // Double check in 15 minutes
+        setTimeout(() => {
+            const sameStock = checkForNewStock(client,true);
+            // Send notification if double check pass
+            if (sameStock) notifyPlayers(client);
+        },60000*15);
+
+        return false;
     }else {
+        if (noretry) return true;
         // Retry in one minute 
         console.log("retrying")
         setTimeout(() => {checkForNewStock(client)},60000);
+        return true;
     }
 }
 
