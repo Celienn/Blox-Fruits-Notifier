@@ -6,5 +6,9 @@
     "dotenv": "^16.3.1",
     "mongoose": "^7.6.3",
     "nodemon": "^3.0.2"
-  }
+  },
+  "scripts": {
+    "start": "nodemon ./src/main.js"
+  },
+  "type": "commonjs"
 }
