@@ -27,6 +27,7 @@ module.exports = {
     blizzard:   "2,400,000",
     gravity:    "2,500,000",
     mammoth:    "2,700,000",
+    trex:      "2,700,000",
     dough:      "2,800,000",
     shadow:     "2,900,000",
     venom:      "3,000,000",
