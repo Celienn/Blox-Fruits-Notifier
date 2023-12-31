@@ -16,7 +16,7 @@ async function refreshAllStockChannel(client) {
 
         for (const gldData of GuildsData) {
             if (!gldData) continue
-            refreshStockChannel(client, gldData.id);
+            refreshStockChannel(client, gldData.id, currStock);
         }
 
     } catch(error) {
@@ -57,8 +57,15 @@ function secondsToWait() {
 }
 
 async function checkForNewStock(client,noretry=false) {
-    const newStock = await getCurrStock();
-    
+    let newStock;
+    try{
+        newStock = await getCurrStock();
+    } catch (error) {
+        console.error(`Error: ${error}`)
+        setTimeout(() => {checkForNewStock(client,noretry)},60000);
+        return;
+    }
+
     let isDiff = false;
     try{
         for (let i = 0 ; i < newStock.length ; i++){

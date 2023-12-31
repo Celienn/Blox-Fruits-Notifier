@@ -3,10 +3,9 @@ const { EmbedBuilder } = require('discord.js');
 const fruitsValue = require("../utils/getDevilsFruitPrice");
 const stockImg = require("../utils/generateStockImg");
 const fruitsNames = Object.keys(fruitsValue);
-const stock = require("./getCurrentStock");
 const nextStock = require("./getStockTime")
 
-module.exports = async (client, guildId) => {
+module.exports = async (client, guildId, currStock) => {
 
     const query = {
         id: guildId,
@@ -20,8 +19,6 @@ module.exports = async (client, guildId) => {
         const channel = guild.channels.cache.get(gldData.stockChannel);
 
         var messageId = gldData.stockMessageId;
-
-        const currStock = await stock();
          
         const fruitFields = [];
         // for (const fruit of currStock) {
