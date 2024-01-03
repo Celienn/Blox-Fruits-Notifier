@@ -8,4 +8,4 @@ docker stop bloxfruitnotifier
 
 docker rm bloxfruitnotifier
 
-docker run -d --name bloxfruitnotifier bloxfruitnotifier-img
+docker run -d --restart always --name bloxfruitnotifier bloxfruitnotifier-img
