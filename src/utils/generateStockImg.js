@@ -53,7 +53,7 @@ module.exports = async (currStockArr) => {
 
         for (let i = 0 ; i < currStockArr.length ; i++){
            
-            const image = await loadImage(__dirname + `\\..\\..\\ressources\\images\\${currStockArr[i]}.png`);
+            const image = await loadImage(__dirname + `/../../ressources/images/${currStockArr[i]}.png`);
             ctx.drawImage(image, 20 + i * 90, cornerRadius, 80, 80);
 
             ctx.font = 'bold 14px Arial';
