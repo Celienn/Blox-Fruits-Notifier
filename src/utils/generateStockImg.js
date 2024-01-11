@@ -25,7 +25,6 @@ const rarityColor = {
     
 }
 
-// TODO Generate and upload the stock image only one time per stock 
 // TODO When more than 4 fruits create a new row of fruits
 
 module.exports = async (currStockArr) => {
@@ -67,7 +66,7 @@ module.exports = async (currStockArr) => {
             ctx.fillText(fruitName, 20 + i * 90 + 40, 100);
 
             ctx.fillStyle = '#70ff39';
-            ctx.fillText("$ " + price[currStockArr[i]], 20 + i * 90 + 40, 120);
+            ctx.fillText("$" + price[currStockArr[i]], 20 + i * 90 + 40, 120);
         }
 
         return canvas.toBuffer();
