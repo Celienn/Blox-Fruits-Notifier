@@ -87,12 +87,12 @@ async function checkForNewStock(client,noretry=false) {
         refreshAllStockChannel(client);
         setTimeout(() => {checkForNewStock(client)},secondsToWait()*1000);
 
-        // Double check in 15 minutes
+        // Double check in 20 minutes
         setTimeout(() => {
             const sameStock = checkForNewStock(client,true);
             // Send notification if double check pass
             if (sameStock) notifyPlayers(client);
-        },60000*15);
+        },60000*20);
 
         return false;
     }else {
