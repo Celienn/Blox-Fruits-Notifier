@@ -18,7 +18,7 @@ module.exports = {
 
                 if (gldData) {
                     if (gldData.stockChannel != interaction.channelId && (gldData.stockChannel && gldData.stockMessageId)) {
-                        // Not the best it would be better to delete the message afther the data base is updated
+                        // Not the best it would be better to delete the message after the data base is updated
                         try{
                             const channel = interaction.guild.channels.cache.get(gldData.stockChannel);
                             const message = await channel.messages.fetch(gldData.stockMessageId);
@@ -26,7 +26,7 @@ module.exports = {
                         }catch{}
                         gldData.stockMessageId = "";
                     }
-                    // Add the new fruit to the user data 
+                    // Update the stock channel
                     gldData.stockChannel = interaction.channelId;
 
                 }else {
