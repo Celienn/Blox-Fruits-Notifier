@@ -55,7 +55,7 @@ module.exports = {
                 }
             }
         } catch (error) {
-            console.error(error);
+            console.error(`[Command /add] Error while load default choices: ${error}`);
             interaction.reply({ content: "An error occurred.", ephemeral: true });
         }
 
@@ -92,7 +92,7 @@ module.exports = {
                 }
                 // Save the new data to the data base
                 await usrData.save().catch((error) => {
-                    console.log(`Error while updating data :${error}`);
+                    console.log(`[Command /add] Error while updating data :${error}`);
                     return;
                 });
 
@@ -106,7 +106,7 @@ module.exports = {
                 confirmation.message.react('✅');
             }
         } catch (error) {
-            console.error(error);
+            console.error(`[Command /add]: ${error}`);
             interaction.reply({ content: "An error occurred.", ephemeral: true });
         }
     },

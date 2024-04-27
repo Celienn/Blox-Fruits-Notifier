@@ -24,14 +24,17 @@ module.exports = {
 
             // Save the new data to the data base
             await usrData.save().catch((error) => {
-                console.log(`Error while updating data :${error}`);
+                console.log(`[Command /togglenotify] Error while updating data :${error}`);
                 return;
             });
         } catch(error) {
-            console.log(`Error: ${error}`)
+            console.log(`[Command /togglenotify]: ${error}`)
         }
 
         const reply = (usrData.notify) ? "Notifications are now enabled" : "Notifications are now disabled";
-        interaction.reply(reply);
+        interaction.reply({
+            ephemeral: true,
+            content: reply
+        });
     },
 }

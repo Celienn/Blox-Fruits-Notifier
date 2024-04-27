@@ -71,6 +71,6 @@ module.exports = async (currStockArr) => {
 
         return canvas.toBuffer();
     } catch (error) {
-        console.log(error);
+        console.log(`[Utils generateStockImg]: ${error}`);
     }
 };

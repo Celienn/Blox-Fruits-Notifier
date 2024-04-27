@@ -22,7 +22,7 @@ module.exports = {
             const reply = (usrData.fruits.join(', ') == '') ? "Your list is empty" : usrData.fruits.join(', ');
             interaction.reply(reply);
         } catch (error) {
-            console.error(error);
+            console.error(`[Command /notifylist]: ${error}`);	
         }
     },
 }

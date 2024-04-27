@@ -34,7 +34,7 @@ module.exports = async (client, guildId, currStock) => {
             .setColor('#07eded')
             .setThumbnail('https://cdn.discordapp.com/attachments/679071256305205258/1168065315217866822/Blox_Fruits.png')
             .setImage('attachment://image.png')
-
+            
         fruitFields.push({
             name: ' ',
             value: `Next refresh <t:${nextStock.nextTimestamp()}:R>`,
@@ -60,11 +60,11 @@ module.exports = async (client, guildId, currStock) => {
         gldData.stockMessageId = messageId;
 
         await gldData.save().catch((error) => {
-            console.log(`Error while updating data :${error}`);
+            console.log(`[Utils refreshGuildStockChannel] Error while updating data :${error}`);
             return;
         });
     } catch(error) {
-        console.log(`Error: ${error}`)
+        console.log(`[Utils refreshGuildStockChannel]: ${error}`)
     }
 
     return true;

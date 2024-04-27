@@ -22,13 +22,16 @@ module.exports = {
 
             // Save the new data to the data base
             await usrData.save().catch((error) => {
-                console.log(`Error while updating data :${error}`);
+                console.log(`[Command /clear] Error while updating data :${error}`);
                 return;
             });
         } catch(error) {
-            console.log(`Error: ${error}`)
+            console.error(`[Command /clear]: ${error}`)
         }
         
-        interaction.reply("Done.");
+        interaction.reply({
+            content: "Your notify list was cleared.",
+            ephemeral: true,
+        });
     },
 }

@@ -11,7 +11,7 @@ module.exports = {
             
             interaction.reply({ files: [{ attachment: imgBuffer, name: 'stock.png' }] });
         } catch (error) {
-            console.log(error);
+            console.log(`[Command /stock]: ${error}`);
         }
 
     },

@@ -20,7 +20,7 @@ async function refreshAllStockChannel(client) {
         }
 
     } catch(error) {
-        console.log(`Error: ${error}`)
+        console.log(`[Function refreshAllStockChannel]: ${error}`)
     }
 }
 
@@ -47,7 +47,7 @@ async function notifyPlayers(client) {
         }
 
     } catch(error) {
-        console.log(`Error: ${error}`)
+        console.log(`[Function notifyPlayers]: ${error}`)
     }
 }
 
@@ -61,7 +61,7 @@ async function checkForNewStock(client,noretry=false) {
     try{
         newStock = await getCurrStock();
     } catch (error) {
-        console.error(`Error: ${error}`)
+        console.error(`[Function checkForNewStock]: ${error}`)
         setTimeout(() => {checkForNewStock(client,noretry)},60000);
         return;
     }
@@ -75,30 +75,31 @@ async function checkForNewStock(client,noretry=false) {
             }
         }        
     } catch(error){
-        console.error(error);
+        console.error(`[Function checkForNewStock]: ${error}`);
     }
 
     if(newStock == []) isDiff = false;
 
     if (isDiff) {
-        console.log(`new stock detected : ${newStock} .}`);
+        console.log(`New stock detected : ${newStock} .}`);
         // New stock detected 
         currStock = newStock;
         refreshAllStockChannel(client);
         setTimeout(() => {checkForNewStock(client)},secondsToWait()*1000);
 
-        // Double check in 20 minutes
+        // Double check in 45 minutes
         setTimeout(() => {
             const sameStock = checkForNewStock(client,true);
+            // Todo : Print to console how many player were notified and why not after how many double check
             // Send notification if double check pass
             if (sameStock) notifyPlayers(client);
-        },60000*20);
+        },60000*45);
 
         return false;
     }else {
         if (noretry) return true;
         // Retry in one minute 
-        console.log("retrying")
+        console.log("New stock not updated yet. Retrying in one minute.")
         setTimeout(() => {checkForNewStock(client)},60000);
         return true;
     }

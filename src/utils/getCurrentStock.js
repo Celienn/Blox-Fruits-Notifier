@@ -19,7 +19,7 @@ module.exports = () => {
                 resolve(currentStock);
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('[Utils getCurrentStock]:', error);
                 reject(error);
             });
     });

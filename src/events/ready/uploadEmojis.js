@@ -16,10 +16,10 @@ module.exports = async (client) => {
 
             await guild.emojis.create({ attachment: folderPath + fruit + ".png", name: fruit })
                 .then(emoji => console.log(`Emoji created: ${emoji.name}`))
-                .catch(error => console.error(`Error uploading emoji ${fruit}: ${error.message}`));
+                .catch(error => console.error(`[Utils uploadEmojis] Error uploading emoji ${fruit}: ${error.message}`));
         
         }
     } catch (error) {
-        console.error(`Error creating emojis: ${error.message}`);
+        console.error(`[Utils uploadEmojis] Error while creating emojis: ${error.message}`);
     }
 };

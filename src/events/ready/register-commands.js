@@ -38,7 +38,7 @@ module.exports = () => {
     
             console.log(`Successfully reloaded ${test.length} application test (/) commands.`);
         } catch (error) {
-            console.log(`Error ==> ${error}`);
+            console.log(`[Event register-commands] Error while registering commands: ${error}`);
         }
     })();
 }

@@ -23,7 +23,9 @@ module.exports = {
                             const channel = interaction.guild.channels.cache.get(gldData.stockChannel);
                             const message = await channel.messages.fetch(gldData.stockMessageId);
                             if (message) message.delete();
-                        }catch{}
+                        }catch{
+                            console.error(`[Command /stockchannel] Error while deleting the old message for guild "${interaction.guild.id}"`);
+                        }
                         gldData.stockMessageId = "";
                     }
                     // Update the stock channel
@@ -38,11 +40,11 @@ module.exports = {
                 }
                 // Save the new data to the data base
                 await gldData.save().catch((error) => {
-                    console.log(`Error while updating data :${error}`);
+                    console.error(`[Command /stockchannel] Error while editing database for guild "${interaction.guild.id}":${error}`);
                     return;
                 });
             } catch(error) {
-                console.log(`Error: ${error}`)
+                console.error(`[Command /stockchannel] Error while editing database for guild "${interaction.guild.id}": ${error}`)
             }
 
             interaction.reply({
@@ -53,7 +55,7 @@ module.exports = {
             refreshStockChannel(client, interaction.guild.id);
 
         } catch (error) {
-            console.log(`Error: ${error}`);
+            console.error(`[Command /stockchannel] Error in guild "${interaction.guild.id}" : ${error}`);
         }
 
     },
