@@ -5,7 +5,11 @@ const stockImg = require("../utils/generateStockImg");
 const fruitsNames = Object.keys(fruitsValue);
 const nextStock = require("./getStockTime")
 
+var storedStock = [];
+
 module.exports = async (client, guildId, currStock) => {
+
+    storedStock = currStock || storedStock;
 
     const query = {
         id: guildId,
@@ -55,7 +59,7 @@ module.exports = async (client, guildId, currStock) => {
             // Modify message
             const message  = await channel.messages.fetch(messageId);
             const file = {
-                attachment: await stockImg(currStock),
+                attachment: await stockImg(storedStock),
                 name:'image.png'
             }
             message.edit({ embeds: [embed] , files: [file]});
