@@ -16,6 +16,14 @@ module.exports = async (client, guildId, currStock) => {
         if (!gldData || !gldData.stockChannel) return;
         
         const guild = client.guilds.cache.get(guildId);
+        if (!guild) {
+            console.log(`Bot no longer in guild "${guildId}".`);
+            GuildData.deleteOne(query).catch((error) => {
+                console.log(`[Utils refreshGuildStockChannel] Error while deleting data :${error}`);
+            });
+            console.log(`Deleted guild "${guildId}" from the database.`);
+        }
+
         const channel = guild.channels.cache.get(gldData.stockChannel);
 
         var messageId = gldData.stockMessageId;
