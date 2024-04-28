@@ -1,11 +1,18 @@
 const GuildData = require("../models/GuildData");
-const { EmbedBuilder } = require('discord.js');
-const fruitsValue = require("../utils/getDevilsFruitPrice");
+const { EmbedBuilder, enableValidators } = require('discord.js');
 const stockImg = require("../utils/generateStockImg");
-const fruitsNames = Object.keys(fruitsValue);
 const nextStock = require("./getStockTime")
+const axios = require('axios');
+
+async function getLastCommitDate() {
+    const gitrepo = process.env.GIT_REPO;
+    const response = await axios.get(`https://api.github.com/repos/${gitrepo}/commits`);
+    const lastCommit = response.data[0];
+    return lastCommit.commit.committer.date;
+}
 
 var storedStock = [];
+var lastCommitDate;
 
 module.exports = async (client, guildId, currStock) => {
 
@@ -46,10 +53,16 @@ module.exports = async (client, guildId, currStock) => {
             .setColor('#07eded')
             .setThumbnail('https://cdn.discordapp.com/attachments/679071256305205258/1168065315217866822/Blox_Fruits.png')
             .setImage('attachment://image.png')
-            
+
+        if (process.env.GIT_REPO) {
+            lastCommitDate = lastCommitDate || new Date(await getLastCommitDate());
+            embed.setFooter({ text: 'Last bot update', iconURL: 'https://i.imgur.com/5k8Jln8.png' })
+                    .setTimestamp(lastCommitDate);
+        }
+
         fruitFields.push({
             name: ' ',
-            value: `Next refresh <t:${nextStock.nextTimestamp()}:R>`,
+            value: `Expires <t:${nextStock.nextTimestamp()}:R>`,
             inline: false,
         })
         
