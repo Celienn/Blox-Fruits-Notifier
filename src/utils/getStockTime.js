@@ -1,5 +1,5 @@
 // it would be great to take time zones in account
-const refreshHours = [1, 5, 9, 13, 17, 21];
+const refreshHours = [0, 4, 8, 12, 16, 20];
 
 module.exports = {
     nextHour : () => {
