@@ -54,18 +54,19 @@ module.exports = async (client, guildId, currStock) => {
         })
         
         embed.addFields(fruitFields);
-        
+
+        const file = {
+            attachment: await stockImg(storedStock),
+            name:'image.png'
+        }
+
         try{
             // Modify message
             const message  = await channel.messages.fetch(messageId);
-            const file = {
-                attachment: await stockImg(storedStock),
-                name:'image.png'
-            }
-            message.edit({ embeds: [embed] , files: [file]});
+            message.edit({ embeds: [embed], files: [file]});
         } catch{
             // Create a new message if the old one was deleted or doesn't exist
-            const message = await channel.send({ embeds: [embed] });
+            const message = await channel.send({ embeds: [embed],  files: [file]});
             messageId = message.id;
         }
         
