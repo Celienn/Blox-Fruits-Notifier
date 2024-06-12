@@ -25,7 +25,7 @@ module.exports = {
             now.setDate(now.getDate() + 1);
             now.setHours(refreshHours[0],0,0,0);
         }
-        console.log(now.getUTCHours());
+        
         return now.getTime() / 1000;
     },
 };
