@@ -16,6 +16,8 @@ module.exports = () => {
                     if (fruitIsInStock) currentStock.push(fruit);
                 }
 
+                if (currentStock.length === 1) currentStock.unshift("rocket","spin");
+
                 resolve(currentStock);
             })
             .catch(error => {
