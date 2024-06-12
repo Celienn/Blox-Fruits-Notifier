@@ -29,7 +29,7 @@ const lastCommitDate = (async () => {
 module.exports = async (client, guildId, currStock) => {
 
     storedStock = currStock || storedStock;
-    console.log(storedStock)
+    
     const query = {
         id: guildId,
     }
