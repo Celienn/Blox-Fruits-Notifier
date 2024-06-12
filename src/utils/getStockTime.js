@@ -1,5 +1,5 @@
 // it would be great to take time zones in account
-const refreshHours = [0, 4, 8, 12, 16, 20];
+const refreshHours = [0, 4, 8, 12, 16, 18];
 
 module.exports = {
     nextHour : () => {
@@ -7,9 +7,8 @@ module.exports = {
         const currentHour = now.getHours();
 
         for (const hour of refreshHours) {
-            if (currentHour < hour || hour == refreshHours[5]) {
-                return hour;
-            }
+            if (currentHour < hour) return hour;
+            if (hour == refreshHours[5]) return refreshHours[0];
         }
     },
     nextTimestamp : () => {
@@ -22,11 +21,11 @@ module.exports = {
                 now.setHours(hour,0,0,0);
                 break;
             }
-            if (hour != refreshHours[5]) continue
+            if (hour != refreshHours[5]) continue;
             now.setDate(now.getDate() + 1);
-            now.setHours(1,0,0,0);
+            now.setHours(refreshHours[0],0,0,0);
         }
-        
+        console.log(now.getUTCHours());
         return now.getTime() / 1000;
     },
 };
