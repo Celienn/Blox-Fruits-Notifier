@@ -1,29 +1,41 @@
 const GuildData = require("../models/GuildData");
-const { EmbedBuilder, enableValidators } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const stockImg = require("../utils/generateStockImg");
 const nextStock = require("./getStockTime")
 const axios = require('axios');
 
 async function getLastCommitDate() {
     const gitrepo = process.env.GIT_REPO;
-    const response = await axios.get(`https://api.github.com/repos/${gitrepo}/commits`);
-    const lastCommit = response.data[0];
-    return lastCommit.commit.committer.date;
+    try {
+        const response = await axios.get(`https://api.github.com/repos/${gitrepo}/commits`, { timeout: 10000 });
+        const lastCommit = response.data[0];
+        return lastCommit.commit.committer.date;
+    } catch (error) {
+        if (axios.isCancel(error)) console.log(`[getLastCommitDate] Request canceled: ${error.message}`);
+        else if (error.code === 'ECONNRESET') console.log(`[getLastCommitDate] Connection reset by peer: ${error.message}`);
+        else console.log(`[getLastCommitDate] Error fetching commits: ${error.message}`);
+        
+        return null;
+    }
 }
 
 var storedStock = [];
-var lastCommitDate;
+const lastCommitDate = (async () => {
+    return await getLastCommitDate();
+})().then(date => {
+    return date ? new Date(date) : null;
+});
 
 module.exports = async (client, guildId, currStock) => {
 
     storedStock = currStock || storedStock;
-
+    console.log(storedStock)
     const query = {
         id: guildId,
     }
 
     try {
-        var gldData = await GuildData.findOne(query);
+        let gldData = await GuildData.findOne(query);
         if (!gldData || !gldData.stockChannel) return;
         
         const guild = client.guilds.cache.get(guildId);
@@ -36,8 +48,7 @@ module.exports = async (client, guildId, currStock) => {
         }
 
         const channel = guild.channels.cache.get(gldData.stockChannel);
-
-        var messageId = gldData.stockMessageId;
+        let messageId = gldData.stockMessageId;
          
         const fruitFields = [];
         // for (const fruit of currStock) {
@@ -54,10 +65,9 @@ module.exports = async (client, guildId, currStock) => {
             .setThumbnail('https://cdn.discordapp.com/attachments/679071256305205258/1168065315217866822/Blox_Fruits.png')
             .setImage('attachment://image.png')
 
-        if (process.env.GIT_REPO) {
-            lastCommitDate = lastCommitDate || new Date(await getLastCommitDate());
+        if (process.env.GIT_REPO && (await lastCommitDate) !== null) {
             embed.setFooter({ text: 'Last bot update', iconURL: 'https://i.imgur.com/5k8Jln8.png' })
-                    .setTimestamp(lastCommitDate);
+                    .setTimestamp(await lastCommitDate);
         }
 
         fruitFields.push({
@@ -90,7 +100,7 @@ module.exports = async (client, guildId, currStock) => {
             return;
         });
     } catch(error) {
-        console.log(`[Utils refreshGuildStockChannel]: ${error}`)
+        console.log(`[Utils refreshGuildStockChannel]: ${error}`);
     }
 
     return true;

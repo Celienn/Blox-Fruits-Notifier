@@ -56,6 +56,7 @@ module.exports = {
             }
         } catch (error) {
             console.error(`[Command /add] Error while load default choices: ${error}`);
+            if (!interaction) throw error;
             interaction.reply({ content: "An error occurred.", ephemeral: true });
         }
 

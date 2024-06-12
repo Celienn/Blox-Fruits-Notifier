@@ -99,7 +99,7 @@ async function checkForNewStock(client,noretry=false) {
     }else {
         if (noretry) return true;
         // Retry in one minute 
-        console.log("New stock not updated yet. Retrying in one minute.")
+        // console.log("New stock not updated yet. Retrying in one minute.")
         setTimeout(() => {checkForNewStock(client)},60000);
         return true;
     }
