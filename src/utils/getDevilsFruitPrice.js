@@ -1,7 +1,7 @@
 module.exports = {
     rocket:     "5,000",
     spin:       "7,500",
-    chop:       "30,000",
+    blade:       "30,000",
     spring:     "60,000",
     bomb:       "80,000",
     smoke:      "100,000",
