@@ -2,7 +2,7 @@
 
 ### 1. Introduction
 
-Welcome to the bot Blox Fruit Notifier. By using this Bot, you agree to comply with these Terms of Service. If you do not agree with any part of these terms, you should not use the Bot.
+Welcome to the bot Blox Fruits Notifier. By using this Bot, you agree to comply with these Terms of Service. If you do not agree with any part of these terms, you should not use the Bot.
 
 ### 2. Description of Service
 
