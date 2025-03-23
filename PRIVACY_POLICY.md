@@ -20,7 +20,7 @@ We do not sell or share user data with any third parties. However, the database 
 
 ### 4. Data Removal
 
-If you wish to remove your stored data, you can do so by leaving any server where is bot is present. On the next bot's reboot your data will be automaticly erased from the database. Alternatively, you may request manual deletion by opening an issue on our GitHub repository.
+You may request manual deletion by opening an issue on our GitHub repository.
 
 ### 5. Security
 
