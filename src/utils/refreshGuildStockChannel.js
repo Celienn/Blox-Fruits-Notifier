@@ -42,12 +42,20 @@ module.exports = async (client, guildId, currStock) => {
         if (!guild) {
             console.log(`Bot no longer in guild "${guildId}".`);
             GuildData.deleteOne(query).catch((error) => {
-                console.log(`[Utils refreshGuildStockChannel] Error while deleting data :${error}`);
+                console.log(`[Utils refreshGuildStockChannel] Error while deleting data 1 :${error}`);
             });
             console.log(`Deleted guild "${guildId}" from the database.`);
         }
 
         const channel = guild.channels.cache.get(gldData.stockChannel);
+        if (!channel) {
+            console.log(`Channel no longer exist "${gldData.stockChannel}".`);
+            GuildData.deleteOne(query).catch((error) => {
+                console.log(`[Utils refreshGuildStockChannel] Error while deleting data 2 :${error}`);
+            });
+            console.log(`Deleted channel "${gldData.stockChannel}" from the database.`);
+        }
+
         let messageId = gldData.stockMessageId;
          
         const fruitFields = [];
@@ -89,13 +97,14 @@ module.exports = async (client, guildId, currStock) => {
             message.edit({ embeds: [embed], files: [file]});
         } catch{
             // Create a new message if the old one was deleted or doesn't exist
+            if (!channel) return; // Sometimes the channel variable is undefined idk why and i'm too busy to fix it properly
             const message = await channel.send({ embeds: [embed],  files: [file]});
             messageId = message.id;
         }
         
         gldData.stockMessageId = messageId;
 
-        await gldData.save().catch((error) => {
+        await gldData.save().catch((error) => { 
             console.log(`[Utils refreshGuildStockChannel] Error while updating data :${error}`);
             return;
         });

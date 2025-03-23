@@ -11,7 +11,8 @@ module.exports = async (client, interaction) => {
         );
         
         if (!commandObject) return
-
+        
+        // TODO check if the bot have the required permissions to execute the command
         await commandObject.callback(client,interaction);
     } catch(error) {
         console.log(`[Commands Handler]: ${error}`);
