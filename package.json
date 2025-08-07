@@ -1,14 +1,29 @@
 {
+  "name": "blox-fruits-notifier-v2",
+  "version": "2.0.0",
+  "description": "If you want to I am hosting the bot you can invite it [here](https://top.gg/bot/822510586466140181).",
+  "main": "main.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "dev": "NODE_ENV=development tsx watch src/main.ts",
+    "start": "NODE_ENV=production node dist/main.js"
+  },
+  "keywords": [],
+  "author": "Decta",
+  "license": "ISC",
+  "type": "module",
   "dependencies": {
     "axios": "^1.6.0",
     "canvas": "^2.11.2",
     "discord.js": "^14.13.0",
     "dotenv": "^16.3.1",
-    "mongoose": "^7.6.3",
-    "nodemon": "^3.0.2"
+    "mongoose": "^7.6.3"
   },
-  "scripts": {
-    "start": "nodemon ./src/main.js"
-  },
-  "type": "commonjs"
+  "devDependencies": {
+    "@types/node": "^24.1.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2"
+  }
 }

@@ -1,17 +1,20 @@
 // it would be great to take time zones in account
-const refreshHours = [0, 4, 8, 12, 16, 18];
+const refreshHours: number[] = [0, 4, 8, 12, 16, 18];
 
-module.exports = {
-    nextHour : () => {
+// todo merge this and getCurrentStock
+export default {
+    nextHour : (): number => {
         const now = new Date()
         const currentHour = now.getHours();
 
         for (const hour of refreshHours) {
             if (currentHour < hour) return hour;
-            if (hour == refreshHours[5]) return refreshHours[0];
+            if (hour == refreshHours[5]) return refreshHours[0] || 0;
         }
+
+        throw new Error("No next hour found in refresh hours");
     },
-    nextTimestamp : () => {
+    nextTimestamp : (): number => {
 
         const now = new Date()
         const currentHour = now.getHours();
@@ -23,7 +26,7 @@ module.exports = {
             }
             if (hour != refreshHours[5]) continue;
             now.setDate(now.getDate() + 1);
-            now.setHours(refreshHours[0],0,0,0);
+            now.setHours(refreshHours[0] || 0,0,0,0);
         }
         
         return now.getTime() / 1000;

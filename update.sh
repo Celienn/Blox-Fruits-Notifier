@@ -2,6 +2,8 @@
 
 #git pull origin main
 
+npm run clean
+
 docker build -t bloxfruitnotifier-img .
 
 docker stop bloxfruitnotifier

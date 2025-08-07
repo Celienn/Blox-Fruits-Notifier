@@ -13,6 +13,9 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     g++
 RUN npm install
+
 COPY . .
 
-CMD ["node", "./src/main.js"]
+RUN npm run build
+
+CMD ["npm", "run", "start"]

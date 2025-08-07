@@ -1,24 +1,32 @@
-const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require("discord.js");
-const UserData = require("../models/UserData");
-const fruits = require("../utils/getDevilsFruitPrice");
-const emojis = require("../utils/getEmojis");
+import { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, type StringSelectMenuInteraction , Client, type ChatInputCommandInteraction, BaseInteraction, CommandInteractionOptionResolver } from "discord.js";
+import UserData from "../models/UserData.js";
+import fruits from "../utils/getDevilsFruitPrice.js";
+import emojis from "../utils/getEmojis.js";
+import client from "../main.js";
 
-const excludeList = process.env.EXCLUDE_FRUITS
-const fruitsNames = Object.keys(fruits);
-var choices = []
+const excludeList: string[] = process.env["EXCLUDE_FRUITS"]?.split(",") || [];
+const fruitsNames: string[] = Object.keys(fruits);
+var choices: StringSelectMenuOptionBuilder[] = [];
 
 for (const fruit of fruitsNames) {
     if (excludeList.includes(fruit)) continue
+    
+    let label = fruit.charAt(0).toUpperCase() + fruit.slice(1);
+    let emoji = await emojis(client, label.toLowerCase());
+
+    if (!emoji) continue;
+
     choices.push(
         new StringSelectMenuOptionBuilder()
-            .setLabel(fruit.charAt(0).toUpperCase() + fruit.slice(1))
+            .setLabel(label)
             .setValue(fruit)
+            .setEmoji(emoji.id)
     );
 }
 
 choices.reverse();
 
-const generateSelectMenu = (customChoices) => {
+const generateSelectMenu = (customChoices: StringSelectMenuOptionBuilder[]) : { select: StringSelectMenuBuilder, row: ActionRowBuilder } => {
     const select = new StringSelectMenuBuilder()
         .setCustomId('addfruits')
         .setPlaceholder('Your list is empty.')
@@ -30,27 +38,35 @@ const generateSelectMenu = (customChoices) => {
     return { select, row };
 };
 
-module.exports = {
+export default {
     name: 'add',
     description: 'Be notified when a fruit is in stock',
-    callback: async (client, interaction) => {
+    callback: async (client: Client, interaction: ChatInputCommandInteraction) : Promise<void> => {
         
-        const customChoices = choices;
+        const defaultChoices = choices.slice(); // todo check if it is even needed
 
         const query = {
             id: interaction.user.id
         }
         
         try {
-            var usrData = await UserData.findOne(query);
-            if (!usrData || !usrData.fruits) return;
+            let usrData = await UserData.findOne(query);
+            if (!usrData || !usrData.fruits) {
+                // If no user data found, create a new entry with an empty fruits array
+                usrData = new UserData({
+                    id: interaction.user.id,
+                    fruits: [],
+                });
+            }
 
-            for (let i = 0 ; i < choices.length ; i++) {    
-                let emoji = await emojis(client,choices[i].toJSON().label.toLowerCase());
-                customChoices[i].setEmoji(emoji.id);
+            // Set default values for the select menu based on user data
+            for (let i = 0 ; i < choices.length ; i++) {  
+                const choice = defaultChoices[i]; 
+                if (!choice) continue;
+                
                 for (const dataFruit of usrData.fruits) {
-                    if (choices[i].toJSON().label.toLowerCase() != dataFruit) continue;
-                    customChoices[i].setDefault(true);
+                    if (choice.toJSON().label.toLowerCase() != dataFruit) continue;
+                    choice.setDefault(true);
                     break;
                 }
             }
@@ -60,25 +76,27 @@ module.exports = {
             interaction.reply({ content: "An error occurred.", ephemeral: true });
         }
 
-        const { select, row } = generateSelectMenu(customChoices);
+        const { row } = generateSelectMenu(defaultChoices);
 
         const response = await interaction.reply({
             content: '\ ',
-            components: [row],
+            components: [row.toJSON()],
         });
 
-        const collectorFilter = i => i.user.id === interaction.user.id;
+        const collectorFilter = (i: BaseInteraction) => {
+            return i.user.id === interaction.user.id && i.isStringSelectMenu();
+        };
 
         try{
             const confirmation = await response.awaitMessageComponent({ filter: collectorFilter });
 
-            if (confirmation.customId === 'addfruits') {
+            if (confirmation.customId === 'addfruits' && confirmation.isStringSelectMenu()) {
                 // Search in  the data base if an entry already exist for the current user 
                 const query = {
                     id: interaction.user.id
                 }
 
-                var usrData = await UserData.findOne(query);
+                let usrData = await UserData.findOne(query);
 
                 if (usrData) {
                     // Add selected fruits to the user data 
@@ -93,12 +111,11 @@ module.exports = {
                 }
                 // Save the new data to the data base
                 await usrData.save().catch((error) => {
-                    console.log(`[Command /add] Error while updating data :${error}`);
+                    console.error(`[Command /add] Error while updating data :${error}`);
                     return;
                 });
 
                 await confirmation.update('\ ');
-
 
                 response.edit({
                     content: 'Changes saved',

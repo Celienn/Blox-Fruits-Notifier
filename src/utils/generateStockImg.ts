@@ -1,14 +1,14 @@
-const { createCanvas, loadImage } = require('canvas');
-const price = require("../utils/getDevilsFruitPrice");
+import { createCanvas, loadImage } from 'canvas';
+import price from "./getDevilsFruitPrice.js";
+import getESMPaths from "./getESMPaths.js";
 
-function priceToNumber(priceStr){
-    if (typeof priceStr == 'number') return priceStr;
+const { __dirname } = getESMPaths(import.meta.url);
+
+function priceToNumber(priceStr : string){
     return Number(priceStr.split(',').join(''));
 }
 
-function rarityByPrice(price){
-    price = priceToNumber(price);
-
+function rarityByPrice(price: number) : string {
     if (price <= 180000 ) return 'Common'
     if (price <= 600000 ) return 'Uncommon'
     if (price <= 960000 ) return 'Rare'
@@ -16,18 +16,17 @@ function rarityByPrice(price){
     return 'Mythical'
 }
 
-const rarityColor = {
+const rarityColor: Record<string, string> = {
     "Common" : '#b3b3b3',
     "Uncommon" : '#5c8cd3',
     "Rare" : '#8c52ff',
     "Legendary" : '#d52be4',
     "Mythical" : '#ee2f32',
-    
 }
 
 // TODO When more than 4 fruits create a new row of fruits
 
-module.exports = async (currStockArr) => {
+export default async (currStockArr: string[]) => {
     try {
         const width = 120 + (currStockArr.length-1)*95;
         const height = 130;
@@ -50,9 +49,18 @@ module.exports = async (currStockArr) => {
         ctx.stroke();
 
 
-        for (let i = 0 ; i < currStockArr.length ; i++){
-           
-            const image = await loadImage(__dirname + `/../../ressources/images/${currStockArr[i]}.png`);
+        for (const fruitIndex of currStockArr) {
+            const fruitPriceStr: string | undefined = price[fruitIndex];
+            const i = currStockArr.indexOf(fruitIndex);
+
+            if (!fruitPriceStr) {
+                console.error(currStockArr);
+                console.log(`[Utils generateStockImg] Price for ${fruitIndex} not found.`);
+                continue;
+            }
+
+            const fruitPrice = priceToNumber(fruitPriceStr);
+            const image = await loadImage(__dirname + `/../../ressources/${fruitIndex}.png`);
             ctx.drawImage(image, 20 + i * 95, cornerRadius, 80, 80);
 
             ctx.font = 'bold 14px Arial';
@@ -60,17 +68,17 @@ module.exports = async (currStockArr) => {
             ctx.shadowColor = 'black';
             ctx.shadowBlur = 1.25 * 5;
             
-            
-            ctx.fillStyle = rarityColor[rarityByPrice(price[currStockArr[i]])];
-            let fruitName = currStockArr[i].charAt(0).toUpperCase() + currStockArr[i].slice(1,currStockArr[i].lenght);
+            ctx.fillStyle = rarityColor[ rarityByPrice(fruitPrice) ] || '#ffffff';
+            let fruitName = fruitIndex.charAt(0).toUpperCase() + fruitIndex.slice(1,fruitIndex.length);
             ctx.fillText(fruitName, 20 + i * 95 + 40, 100);
 
             ctx.fillStyle = '#70ff39';
-            ctx.fillText("$" + price[currStockArr[i]], 20 + i * 95 + 40, 120);
+            ctx.fillText("$" + fruitPriceStr, 20 + i * 95 + 40, 120);
         }
 
         return canvas.toBuffer();
     } catch (error) {
         console.log(`[Utils generateStockImg]: ${error}`);
+        throw error;
     }
 };

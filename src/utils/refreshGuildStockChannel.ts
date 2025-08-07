@@ -1,35 +1,38 @@
-const GuildData = require("../models/GuildData");
-const { EmbedBuilder } = require('discord.js');
-const stockImg = require("../utils/generateStockImg");
-const nextStock = require("./getStockTime")
-const axios = require('axios');
+import axios from 'axios';
+import GuildData from '../models/GuildData.js';
+import { EmbedBuilder, type APIEmbedField } from 'discord.js';
+import stockImg from './generateStockImg.js';
+import stock from './stockTime.js';
+import { Client } from 'discord.js';
 
+// todo fix
 async function getLastCommitDate() {
-    const gitrepo = process.env.GIT_REPO;
+    const gitrepo = process.env["GIT_REPO"];
     try {
         const response = await axios.get(`https://api.github.com/repos/${gitrepo}/commits`, { timeout: 10000 });
         const lastCommit = response.data[0];
         return lastCommit.commit.committer.date;
     } catch (error) {
-        if (axios.isCancel(error)) console.log(`[getLastCommitDate] Request canceled: ${error.message}`);
-        else if (error.code === 'ECONNRESET') console.log(`[getLastCommitDate] Connection reset by peer: ${error.message}`);
-        else console.log(`[getLastCommitDate] Error fetching commits: ${error.message}`);
+        const err = error as any;
+        if (axios.isCancel(err)) console.log(`[getLastCommitDate] Request canceled: ${err.message}`);
+        else if (err.code === 'ECONNRESET') console.log(`[getLastCommitDate] Connection reset by peer: ${err.message}`);
+        else console.log(`[getLastCommitDate] Error fetching commits: ${err.message}`);
         
         return null;
     }
 }
 
-var storedStock = [];
+var storedStock: string[] = [];
 const lastCommitDate = (async () => {
     return await getLastCommitDate();
 })().then(date => {
     return date ? new Date(date) : null;
 });
 
-module.exports = async (client, guildId, currStock) => {
+export default async (client: Client, guildId: string, currStock: string[] = [""]) => {
 
-    storedStock = currStock || storedStock;
-    
+    storedStock = (currStock.length === 1 && currStock[0] === "") ? storedStock : currStock;
+
     const query = {
         id: guildId,
     }
@@ -39,25 +42,29 @@ module.exports = async (client, guildId, currStock) => {
         if (!gldData || !gldData.stockChannel) return;
         
         const guild = client.guilds.cache.get(guildId);
-        if (!guild) {
+
+        if (guild === undefined  || !guild.available) {
             console.log(`Bot no longer in guild "${guildId}".`);
             GuildData.deleteOne(query).catch((error) => {
-                console.log(`[Utils refreshGuildStockChannel] Error while deleting data :${error}`);
+                console.log(`[Utils refreshGuildStockChannel] Error while deleting data 1 :${error}`);
             });
             console.log(`Deleted guild "${guildId}" from the database.`);
+            return;
         }
 
         const channel = guild.channels.cache.get(gldData.stockChannel);
+        if (!channel || channel.type !== 0) { // 0 is GUILD_TEXT
+            console.log(`Channel no longer exist "${gldData.stockChannel}".`);
+            GuildData.deleteOne(query).catch((error) => {
+                console.log(`[Utils refreshGuildStockChannel] Error while deleting data 2 :${error}`);
+            });
+            console.log(`Deleted channel "${gldData.stockChannel}" from the database.`);
+            return;
+        }
+
         let messageId = gldData.stockMessageId;
-         
-        const fruitFields = [];
-        // for (const fruit of currStock) {
-        //     fruitFields.push({
-        //         name: fruit,
-        //         value: fruitsValue[fruit],
-        //         inline: true,
-        //     });
-        // }
+        
+        const fruitFields: APIEmbedField[] = [];
 
         const embed = new EmbedBuilder()
             .setTitle('Current stock')
@@ -65,14 +72,14 @@ module.exports = async (client, guildId, currStock) => {
             .setThumbnail('https://cdn.discordapp.com/attachments/679071256305205258/1168065315217866822/Blox_Fruits.png')
             .setImage('attachment://image.png')
 
-        if (process.env.GIT_REPO && (await lastCommitDate) !== null) {
+        if (process.env["GIT_REPO"] && (await lastCommitDate) !== null) {
             embed.setFooter({ text: 'Last bot update', iconURL: 'https://i.imgur.com/5k8Jln8.png' })
                     .setTimestamp(await lastCommitDate);
         }
 
         fruitFields.push({
             name: ' ',
-            value: `Expires <t:${nextStock.nextTimestamp()}:R>`,
+            value: `Expires <t:${stock.nextTimestamp()}:R>`,
             inline: false,
         })
         
@@ -84,10 +91,11 @@ module.exports = async (client, guildId, currStock) => {
         }
 
         try{
+            if (!messageId) throw new Error("No messageId available");
             // Modify message
             const message  = await channel.messages.fetch(messageId);
             message.edit({ embeds: [embed], files: [file]});
-        } catch{
+        } catch {
             // Create a new message if the old one was deleted or doesn't exist
             const message = await channel.send({ embeds: [embed],  files: [file]});
             messageId = message.id;
@@ -95,7 +103,7 @@ module.exports = async (client, guildId, currStock) => {
         
         gldData.stockMessageId = messageId;
 
-        await gldData.save().catch((error) => {
+        await gldData.save().catch((error) => { 
             console.log(`[Utils refreshGuildStockChannel] Error while updating data :${error}`);
             return;
         });

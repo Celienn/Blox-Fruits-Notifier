@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     rocket:     "5,000",
     spin:       "7,500",
     blade:       "30,000",
@@ -20,6 +20,7 @@ module.exports = {
     quake:      "1,000,000",
     buddha:     "1,200,000",
     love:       "1,300,000",
+    creation:   "1,400,000",
     spider:     "1,500,000",
     sound:      "1,700,000",
     phoenix:    "1,800,000",
@@ -40,4 +41,4 @@ module.exports = {
     yeti:       "5,000,000",
     kitsune:    "8,000,000",
     dragon:     "15,000,000",
-};
+} as Record<string, string>;

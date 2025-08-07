@@ -1,9 +1,10 @@
-const UserData = require("../models/UserData");
+import UserData from "../models/UserData.js";
+import { Client, type ChatInputCommandInteraction } from "discord.js";
 
-module.exports = {
+export default {
     name: 'clear',
     description: 'Clear your notify list',
-    callback: async (client, interaction) => {
+    callback: async (client: Client, interaction: ChatInputCommandInteraction) => {
 
         // Search in  the data base if an entry already exist for the current user 
         const query = {
@@ -11,13 +12,14 @@ module.exports = {
         }
 
         try {
-            var usrData = await UserData.findOne(query);
+            let usrData = await UserData.findOne(query);
+
             if (!usrData) {
                 interaction.reply("Your notify list is already empty."); 
                 return;
             }
 
-            // Remove the fruit from the user date
+            // Remove the fruits from the user data
             usrData.fruits = []
 
             // Save the new data to the data base
@@ -25,6 +27,7 @@ module.exports = {
                 console.log(`[Command /clear] Error while updating data :${error}`);
                 return;
             });
+            
         } catch(error) {
             console.error(`[Command /clear]: ${error}`)
         }
