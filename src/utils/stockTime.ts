@@ -1,5 +1,5 @@
 // it would be great to take time zones in account
-const refreshHours: number[] = [0, 4, 8, 12, 16, 18];
+const refreshHours: number[] = [0, 4, 8, 12, 16, 20];
 
 // todo merge this and getCurrentStock
 export default {

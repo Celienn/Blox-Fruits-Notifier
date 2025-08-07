@@ -10,7 +10,8 @@ var currStock: string[];
     currStock = await getCurrStock;
 })();
 
-async function refreshAllStockChannel(client: Client) {
+// todo move some of those functions to utils
+export async function refreshAllStockChannel(client: Client) {
     try {
         const GuildsData = await GuildData.find({})
         if (!GuildsData) return;
@@ -55,6 +56,14 @@ function secondsToWait() {
     const now = Math.floor(Date.now() / 1000); 
     return stock.nextTimestamp() - now;
 }
+function arraysEqual(a: string[], b: string[]) {
+    if (!a || !b) return false;
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+        if (a[i] !== b[i]) return false;
+    }
+    return true;
+}
 
 async function checkForNewStock(client: Client, noretry=false) {
     let newStock: string[];
@@ -66,7 +75,7 @@ async function checkForNewStock(client: Client, noretry=false) {
         return;
     }
 
-    let isDiff = !(currStock === newStock);
+    let isDiff = !arraysEqual(currStock, newStock);
 
     if(newStock.length === 0) isDiff = false;
 

@@ -1,5 +1,5 @@
 import GuildData from '../models/GuildData.js';
-import { Client, ChatInputCommandInteraction, type GuildBasedChannel } from 'discord.js';
+import { Client, ChatInputCommandInteraction } from 'discord.js';
 import refreshStockChannel from '../utils/refreshGuildStockChannel.js';
 
 // todo use 

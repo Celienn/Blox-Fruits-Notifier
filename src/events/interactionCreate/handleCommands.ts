@@ -17,6 +17,7 @@ export default async (client: Client, interaction: ChatInputCommandInteraction) 
         }
         
         // TODO check if the bot have the required permissions to execute the command
+        console.log(`${interaction.user.tag} used /${interaction.commandName} command`);
         await commandObject.callback(client,interaction);
     } catch(error) {
         console.log(`[Command Handler]: ${error}`);

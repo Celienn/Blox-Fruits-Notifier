@@ -25,6 +25,7 @@ export default client;
  * 6) improve logs
  * 7) add help command or an easy way for people to know who / where to go when there is an issue with the bot
  * 8) clean my trash code ( use lower camel case for var and func , but camel case for classes , types , interface , etc ...) , add more comments, etc...
+ * 9) use alternative to deprecated packages
 */
 (async () => {
     try{
