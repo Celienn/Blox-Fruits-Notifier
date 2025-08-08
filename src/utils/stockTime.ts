@@ -1,10 +1,10 @@
-// it would be great to take time zones in account
+// UTC+0 time zone
 const refreshHours: number[] = [0, 4, 8, 12, 16, 20];
 
 // todo merge this and getCurrentStock
 export default {
     nextHour : (): number => {
-        const now = new Date()
+        const now = new Date();
         const currentHour = now.getHours();
 
         for (const hour of refreshHours) {
@@ -16,17 +16,17 @@ export default {
     },
     nextTimestamp : (): number => {
 
-        const now = new Date()
-        const currentHour = now.getHours();
+        const now = new Date();
+        const currentHour = now.getUTCHours();
 
         for (const hour of refreshHours) {
             if (currentHour < hour) {
-                now.setHours(hour,0,0,0);
+                now.setUTCHours(hour,0,0,0);
                 break;
             }
             if (hour != refreshHours[5]) continue;
-            now.setDate(now.getDate() + 1);
-            now.setHours(refreshHours[0] || 0,0,0,0);
+            now.setUTCDate(now.getUTCDate() + 1);
+            now.setUTCHours(refreshHours[0] || 0,0,0,0);
         }
         
         return now.getTime() / 1000;
