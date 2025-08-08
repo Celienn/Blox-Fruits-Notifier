@@ -11,7 +11,7 @@ var currStock: string[];
 })();
 
 // todo move some of those functions to utils
-export async function refreshAllStockChannel(client: Client) {
+async function refreshAllStockChannel(client: Client) {
     try {
         const GuildsData = await GuildData.find({})
         if (!GuildsData) return;
@@ -65,10 +65,11 @@ function arraysEqual(a: string[], b: string[]) {
     return true;
 }
 
-async function checkForNewStock(client: Client, noretry=false) {
+export async function checkForNewStock(client: Client, noretry=false) {
     let newStock: string[];
     try{
         newStock = await getCurrStock;
+        console.log(`Current stock: ${newStock}`);
     } catch (error) {
         console.error(`[Function checkForNewStock]: ${error}`)
         setTimeout(() => {checkForNewStock(client,noretry)},60000);

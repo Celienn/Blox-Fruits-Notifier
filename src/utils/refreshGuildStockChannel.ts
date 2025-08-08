@@ -3,7 +3,7 @@ import GuildData from '../models/GuildData.js';
 import { EmbedBuilder, type APIEmbedField } from 'discord.js';
 import stockImg from './generateStockImg.js';
 import stock from './stockTime.js';
-import { Client } from 'discord.js';
+import { Client, ChannelType } from 'discord.js';
 
 // todo fix
 async function getLastCommitDate() {
@@ -53,7 +53,7 @@ export default async (client: Client, guildId: string, currStock: string[] = [""
         }
 
         const channel = guild.channels.cache.get(gldData.stockChannel);
-        if (!channel || channel.type !== 0) { // 0 is GUILD_TEXT
+        if (!channel || channel.type !== ChannelType.GuildText) {
             console.log(`Channel no longer exist "${gldData.stockChannel}".`);
             GuildData.deleteOne(query).catch((error) => {
                 console.log(`[Utils refreshGuildStockChannel] Error while deleting data 2 :${error}`);

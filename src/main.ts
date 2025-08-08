@@ -17,15 +17,14 @@ export default client;
 
 /* 
    todo list
- * 1) switch to typescript 
- * 2) use bot emojis 
- * 3) setup user bot / user application 
- * 4) add units test
- * 5) make it so you can actually add any fruit to the notify list
- * 6) improve logs
- * 7) add help command or an easy way for people to know who / where to go when there is an issue with the bot
- * 8) clean my trash code ( use lower camel case for var and func , but camel case for classes , types , interface , etc ...) , add more comments, etc...
- * 9) use alternative to deprecated packages
+ * 1) use bot emojis 
+ * 2) setup user bot / user application 
+ * 3) add units test
+ * 4) make it so you can actually add any fruit to the notify list
+ * 5) improve logs
+ * 6) add help command or an easy way for people to know who / where to go when there is an issue with the bot
+ * 7) clean my trash code ( use lower camel case for var and func , but camel case for classes , types , interface , etc ...) , add more comments, etc...
+ * 8) use alternative to deprecated packages
 */
 (async () => {
     try{

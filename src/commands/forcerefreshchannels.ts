@@ -1,5 +1,5 @@
 import { Client, ChatInputCommandInteraction } from 'discord.js';
-import { refreshAllStockChannel } from '../events/ready/autoRefreshStockChannel.js';
+import { checkForNewStock } from '../events/ready/autoRefreshStockChannel.js';
 
 export default {
     name: 'forcerefreshchannels',
@@ -8,7 +8,7 @@ export default {
     test: true,
     options: [],
     callback: async (client: Client, interaction: ChatInputCommandInteraction) => {
-        await refreshAllStockChannel(client);
+        await checkForNewStock(client, true);
         interaction.reply({ content: "All stock channels have been refreshed.", ephemeral: true });
     },
 }
