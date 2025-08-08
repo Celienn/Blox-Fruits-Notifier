@@ -7,7 +7,7 @@ import getCurrStock from '../../utils/getCurrentStock.js';
 var currStock: string[];
 
 (async () => {
-    currStock = await getCurrStock;
+    currStock = await getCurrStock();
 })();
 
 // todo move some of those functions to utils
@@ -68,7 +68,7 @@ function arraysEqual(a: string[], b: string[]) {
 export async function checkForNewStock(client: Client, noretry=false) {
     let newStock: string[];
     try{
-        newStock = await getCurrStock;
+        newStock = await getCurrStock();
         console.log(`Current stock: ${newStock}`);
     } catch (error) {
         console.error(`[Function checkForNewStock]: ${error}`)

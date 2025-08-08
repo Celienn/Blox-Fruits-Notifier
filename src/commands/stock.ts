@@ -7,7 +7,7 @@ export default {
     description: 'Show the blox fruit dealer\'s current stock',
     callback: async (client: Client, interaction: ChatInputCommandInteraction) => {
         try {
-            const stockArr = await stock;
+            const stockArr = await stock();
             const imgBuffer = await stockImg(stockArr);
             
             interaction.reply({ files: [{ attachment: imgBuffer, name: 'stock.png' }] });

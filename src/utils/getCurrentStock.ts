@@ -4,33 +4,33 @@ const fruitNames = Object.keys(fruits);
 
 const url: string = 'https://blox-fruits.fandom.com/wiki/Blox_Fruits_"Stock"';
 
-export default new Promise<string[]>((resolve, reject) => {
-    axios.get(url)
-        .then(response => {
-            let page: string | undefined = response.data;
-            let currentStock: string[] = [];
+export default async () => {
+    try {
+        const response = await axios.get(url);
 
-            if (page === undefined || page.length === 0) {
-                return reject('Error retrieving stock data.');
-            }
+        let page: string | undefined = response.data;
+        let currentStock: string[] = [];
 
-            page = page.toLowerCase().split('id="mw-customcollapsible-current"')?.pop()?.split('id="mw-customcollapsible-last"')[0];
+        if (page === undefined || page.length === 0) {
+            throw new Error('Error retrieving stock data.');
+        }
 
-            if (!page) {
-                return reject('Error parsing stock data.');
-            }
+        page = page.toLowerCase().split('id="mw-customcollapsible-current"')?.pop()?.split('id="mw-customcollapsible-last"')[0];
 
-            for (const fruit of fruitNames) {
-                const fruitIsInStock = page.includes(`>${fruit}<`);
-                if (fruitIsInStock) currentStock.push(fruit);
-            }
+        if (!page) {
+            throw new Error('Error parsing stock data.');
+        }
 
-            if (currentStock.length === 1) currentStock.unshift("rocket","spin");
+        for (const fruit of fruitNames) {
+            const fruitIsInStock = page.includes(`>${fruit}<`);
+            if (fruitIsInStock) currentStock.push(fruit);
+        }
 
-            resolve(currentStock);
-        })
-        .catch(error => {
-            console.error('[Utils getCurrentStock]:', error);
-            reject(error);
-        });
-});
+        if (currentStock.length === 1) currentStock.unshift("rocket","spin");
+
+        return currentStock;
+    } catch (error) {
+        console.error('[Utils getCurrentStock]:', error);
+        throw new Error('Failed to fetch current stock data.');
+    }
+};
