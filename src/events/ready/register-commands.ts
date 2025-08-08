@@ -11,9 +11,9 @@ export default async () => {
     const rest = new REST({version: '10'}).setToken(getToken()!); // trust me bro
     
     // todo add test to verify the client id is set and valid
-    const CLIENT_ID = (process.env["NODE_ENV"] === "production") ?
-        process.env["PROD_CLIENT_ID"]! :
-        process.env["DEV_CLIENT_ID"]!;
+    const APP_ID = (process.env["NODE_ENV"] === "production") ?
+        process.env["PROD_APP_ID"]! :
+        process.env["DEV_APP_ID"]!;
 
     (async () => {
         try{
@@ -32,7 +32,7 @@ export default async () => {
 
             // Loading commands
             const data = await rest.put(
-                Routes.applicationCommands(CLIENT_ID),
+                Routes.applicationCommands(APP_ID),
                 { body: globalCommands },
             ) as RESTPostAPIApplicationCommandsResult[];
 
@@ -41,7 +41,7 @@ export default async () => {
             if (!testCommands.length || typeof process.env["DEFAULT_GUILD"] === undefined) return ;
 
             const test = await rest.put(
-                Routes.applicationGuildCommands(CLIENT_ID, process.env["DEFAULT_GUILD"]!),
+                Routes.applicationGuildCommands(APP_ID, process.env["DEFAULT_GUILD"]!),
                 { body: testCommands },
             ) as RESTPostAPIApplicationCommandsResult[];
 

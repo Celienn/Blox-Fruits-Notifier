@@ -40,7 +40,7 @@ export default client;
 
         mongoose.set('strictQuery', false);
         await mongoose.connect(uri);
-        console.log("✅ Connected to Database.");
+        console.log("✅ Connected to Database");
 
         const token: string | undefined = getToken();
 
@@ -54,9 +54,18 @@ export default client;
         client.login(token);
     } catch (error: unknown) {
         if (error instanceof Error) {
-            console.log(`Error : ${error.message}`);
+            console.error(`Error : ${error.message}`);
         } else {
-            console.log(`Error : ${String(error)}`);
+            console.error(`Error : ${String(error)}`);
         }
     }
 })();
+
+
+// ! don't 
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection:', reason);
+});
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+});

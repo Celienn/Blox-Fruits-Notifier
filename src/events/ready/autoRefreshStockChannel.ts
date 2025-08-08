@@ -69,7 +69,6 @@ export async function checkForNewStock(client: Client, noretry=false) {
     let newStock: string[];
     try{
         newStock = await getCurrStock();
-        console.log(`Current stock: ${newStock}`);
     } catch (error) {
         console.error(`[Function checkForNewStock]: ${error}`)
         setTimeout(() => {checkForNewStock(client,noretry)},60000);
@@ -81,7 +80,7 @@ export async function checkForNewStock(client: Client, noretry=false) {
     if(newStock.length === 0) isDiff = false;
 
     if (isDiff) {
-        console.log(`New stock detected : ${newStock} .}`);
+        console.log(`New stock detected : ${newStock}`);
         // New stock detected 
         currStock = newStock;
         refreshAllStockChannel(client);

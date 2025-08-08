@@ -1,7 +1,7 @@
 import { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, type StringSelectMenuInteraction , Client, type ChatInputCommandInteraction, BaseInteraction, CommandInteractionOptionResolver } from "discord.js";
 import UserData from "../models/UserData.js";
 import fruits from "../utils/getDevilsFruitPrice.js";
-import emojis from "../utils/getEmojis.js";
+import emojis from "../utils/emoji.js";
 import client from "../main.js";
 
 const excludeList: string[] = process.env["EXCLUDE_FRUITS"]?.split(",") || [];
@@ -12,7 +12,7 @@ for (const fruit of fruitsNames) {
     if (excludeList.includes(fruit)) continue
     
     let label = fruit.charAt(0).toUpperCase() + fruit.slice(1);
-    let emoji = await emojis(client, label.toLowerCase());
+    let emoji = await emojis.get(label.toLowerCase());
 
     if (!emoji) continue;
 

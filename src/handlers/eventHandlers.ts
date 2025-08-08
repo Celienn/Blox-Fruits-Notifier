@@ -21,7 +21,11 @@ export default function eventHandler(client: Client): void {
             for (const eventFile of eventFiles) {
                 const eventModule = await import(eventFile);
                 const eventFunction: (client?: Client, arg?: unknown) => Promise<void> = eventModule.default || eventModule;
-                await eventFunction(client, arg);
+                try {
+                    await eventFunction(client, arg);
+                } catch (error) {
+                    console.error(`❌ Error in event handler for ${eventName} in file ${eventFile}:`, error);
+                }
             }
         });
     }

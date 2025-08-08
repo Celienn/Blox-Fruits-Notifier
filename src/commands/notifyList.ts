@@ -1,7 +1,8 @@
 import UserData, { type IUserData } from "../models/UserData.js";
-import emojis from "../utils/getEmojis.js";
+import emojis from "../utils/emoji.js";
 import { Client, ChatInputCommandInteraction } from "discord.js";
 
+// todo make it show weather or not the notification are enabled or not
 export default {
     name: 'notifylist',
     description: 'Show your notify list',
@@ -16,13 +17,11 @@ export default {
             
             if (!usrData || !usrData.fruits) return; // ! not good
 
-            for (let i = 0; i < usrData.fruits.length; i++) {
-                const fruitName = usrData.fruits[i];
-                if (!fruitName) continue;
+            let emojiList = await emojis.getList();
 
-                let emoji = await emojis(client, fruitName);
-                usrData.fruits[i] = `${emoji} ${usrData.fruits[i]}`
-            }
+            usrData.fruits = usrData.fruits
+                .filter(Boolean)
+                .map(fruitName => `${emojiList[fruitName] || ''} ${fruitName}`.trim());
 
             const reply = (usrData.fruits.join(', ') == '') ? "Your list is empty" : usrData.fruits.join(', ');
             interaction.reply(reply);
