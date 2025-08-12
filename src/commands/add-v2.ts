@@ -31,7 +31,7 @@ export function initChoices() {
         let label = fruit.charAt(0).toUpperCase() + fruit.slice(1);
         let emoji = emojis.get(label.toLowerCase());
 
-        if (!emoji || !fruits[fruit]) continue;
+        if (!emoji || !fruits[fruit] || fruit === 'rocket' || fruit === 'spin') continue;
         
         let rarity = rarityByPrice(fruits[fruit].price).toLowerCase();
 
