@@ -49,7 +49,7 @@ const generateSelectMenu = (id: string, choices: StringSelectMenuOptionBuilder[]
     const select = new StringSelectMenuBuilder()
         .setCustomId(id)
         .setPlaceholder('Your list is empty.')
-        .setMinValues(1)
+        .setMinValues(0)
         .setMaxValues(choices.length) // 25 is the max
         .addOptions(choices);
         
