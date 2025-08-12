@@ -1,7 +1,8 @@
 import { Client, type ChatInputCommandInteraction } from "discord.js";
-import emojis from "../utils/emoji.js";
+import emojis from "../utils/emojis.js";
 import GuildData from "../models/GuildData.js";
 import UserData from "../models/UserData.js";
+import { env } from "process";
 
 export default {
     name: 'debug',
@@ -78,6 +79,11 @@ export default {
                 break;
             
             case 'clear-db':
+
+                if (process.env["NODE_ENV"] !== "development") {
+                    interaction.reply({ content: "you fool", ephemeral: true });
+                    return;
+                }
 
                 await interaction.deferReply();
 

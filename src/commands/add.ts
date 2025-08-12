@@ -1,37 +1,40 @@
 import { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, type StringSelectMenuInteraction , Client, type ChatInputCommandInteraction, BaseInteraction, CommandInteractionOptionResolver } from "discord.js";
 import UserData from "../models/UserData.js";
-import fruits from "../utils/getDevilsFruitPrice.js";
-import emojis from "../utils/emoji.js";
-import client from "../main.js";
+import fruits from "../utils/fruits.js";
+import emojis from "../utils/emojis.js";
 
 const excludeList: string[] = process.env["EXCLUDE_FRUITS"]?.split(",") || [];
 const fruitsNames: string[] = Object.keys(fruits);
 var choices: StringSelectMenuOptionBuilder[] = [];
 
-for (const fruit of fruitsNames) {
-    if (excludeList.includes(fruit)) continue
-    
-    let label = fruit.charAt(0).toUpperCase() + fruit.slice(1);
-    let emoji = await emojis.get(label.toLowerCase());
+let initialized = false;
+export function initChoices() {
+    if (initialized) return;
 
-    if (!emoji) continue;
+    for (const fruit of fruitsNames) {
+        let label = fruit.charAt(0).toUpperCase() + fruit.slice(1);
+        let emoji = emojis.get(label.toLowerCase());
 
-    choices.push(
-        new StringSelectMenuOptionBuilder()
+        if (!emoji || !fruits[fruit] || excludeList.includes(fruit)) continue;
+
+        choices.push(new StringSelectMenuOptionBuilder()
             .setLabel(label)
             .setValue(fruit)
             .setEmoji(emoji.id)
-    );
+        );
+    }
+    initialized = true;
+    choices.reverse();
+    return choices;
 }
 
-choices.reverse();
 
 const generateSelectMenu = (customChoices: StringSelectMenuOptionBuilder[]) : { select: StringSelectMenuBuilder, row: ActionRowBuilder } => {
     const select = new StringSelectMenuBuilder()
         .setCustomId('addfruits')
         .setPlaceholder('Your list is empty.')
         .setMinValues(1)
-        .setMaxValues(choices.length)
+        .setMaxValues(customChoices.length)
         .addOptions(customChoices);
 
     const row = new ActionRowBuilder().addComponents(select);
@@ -44,6 +47,11 @@ export default {
     callback: async (client: Client, interaction: ChatInputCommandInteraction) : Promise<void> => {
         
         const defaultChoices = choices.slice(); // todo check if it is even needed
+
+        if (!initialized) {
+            await emojis.init();
+            initChoices();
+        }
 
         const query = {
             id: interaction.user.id
@@ -60,8 +68,7 @@ export default {
             }
 
             // Set default values for the select menu based on user data
-            for (let i = 0 ; i < choices.length ; i++) {  
-                const choice = defaultChoices[i]; 
+            for (const choice of defaultChoices) {
                 if (!choice) continue;
                 
                 for (const dataFruit of usrData.fruits) {

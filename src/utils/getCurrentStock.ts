@@ -1,5 +1,5 @@
 import axios from 'axios';
-import fruits from './getDevilsFruitPrice.js';
+import fruits from './fruits.js';
 const fruitNames = Object.keys(fruits);
 
 const url: string = 'https://blox-fruits.fandom.com/wiki/Blox_Fruits_"Stock"';
