@@ -48,7 +48,7 @@ export function initChoices() {
 const generateSelectMenu = (id: string, choices: StringSelectMenuOptionBuilder[]) : StringSelectMenuBuilder => {
     const select = new StringSelectMenuBuilder()
         .setCustomId(id)
-        .setPlaceholder('Your list is empty.')
+        .setPlaceholder('No fruits selected.')
         .setMinValues(0)
         .setMaxValues(choices.length) // 25 is the max
         .addOptions(choices);

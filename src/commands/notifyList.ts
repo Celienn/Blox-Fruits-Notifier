@@ -27,6 +27,10 @@ export default {
             interaction.reply(reply);
         } catch (error) {
             console.error(`[Command /notifylist]: ${error}`);	
+            interaction.reply({
+                content: "An error occurred while fetching your notify list.",
+                ephemeral: true,
+            });
         }
     },
 }

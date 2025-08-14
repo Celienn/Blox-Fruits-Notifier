@@ -4,6 +4,7 @@ import { EmbedBuilder, type APIEmbedField } from 'discord.js';
 import stockImg from './generateStockImg.js';
 import stock from './stockTime.js';
 import { Client, ChannelType } from 'discord.js';
+import hasPermissions from './checkBotPermissions.js';
 
 // todo fix
 async function getLastCommitDate() {
@@ -14,9 +15,9 @@ async function getLastCommitDate() {
         return lastCommit.commit.committer.date;
     } catch (error) {
         const err = error as any;
-        if (axios.isCancel(err)) console.log(`[getLastCommitDate] Request canceled: ${err.message}`);
-        else if (err.code === 'ECONNRESET') console.log(`[getLastCommitDate] Connection reset by peer: ${err.message}`);
-        else console.log(`[getLastCommitDate] Error fetching commits: ${err.message}`);
+        if (axios.isCancel(err)) console.error(`[getLastCommitDate] Request canceled: ${err.message}`);
+        else if (err.code === 'ECONNRESET') console.error(`[getLastCommitDate] Connection reset by peer: ${err.message}`);
+        else console.error(`[getLastCommitDate] Error fetching commits: ${err.message}`);
         
         return null;
     }
@@ -44,26 +45,32 @@ export default async (client: Client, guildId: string, currStock: string[] = [""
         const guild = client.guilds.cache.get(guildId);
 
         if (guild === undefined  || !guild.available) {
-            console.log(`Bot no longer in guild "${guildId}".`);
             GuildData.deleteOne(query).catch((error) => {
-                console.log(`[Utils refreshGuildStockChannel] Error while deleting data 1 :${error}`);
+                console.error(`[Utils refreshGuildStockChannel] Error while deleting data 1 :${error}`);
             });
-            console.log(`Deleted guild "${guildId}" from the database.`);
+            console.log(`Deleted guild "${guildId}" from the database. Reason : Bot no longer in guild.`);
             return;
         }
 
         const channel = guild.channels.cache.get(gldData.stockChannel);
         if (!channel || channel.type !== ChannelType.GuildText) {
-            console.log(`Channel no longer exist "${gldData.stockChannel}".`);
             GuildData.deleteOne(query).catch((error) => {
-                console.log(`[Utils refreshGuildStockChannel] Error while deleting data 2 :${error}`);
+                console.error(`[Utils refreshGuildStockChannel] Error while deleting data 2 :${error}`);
             });
-            console.log(`Deleted channel "${gldData.stockChannel}" from the database.`);
+            console.log(`Deleted channel "${gldData.stockChannel}" from the database. Reason : Channel no longer exists.`);
             return;
         }
 
         let messageId = gldData.stockMessageId;
-        
+
+        if (await hasPermissions(client, channel, "SendMessages") === false) {
+            GuildData.deleteOne(query).catch((error) => {
+                console.error(`[Utils refreshGuildStockChannel] Error while deleting data 3 :${error}`);
+            });
+            console.log(`Deleted channel "${gldData.stockChannel}" from the database. Reason : Bot does not have permission to send messages.`);
+            return;
+        }
+
         const fruitFields: APIEmbedField[] = [];
 
         const embed = new EmbedBuilder()
@@ -101,14 +108,14 @@ export default async (client: Client, guildId: string, currStock: string[] = [""
             messageId = message.id;
         }
         
+        // Todo don't save to the data base if it wasn't modified
         gldData.stockMessageId = messageId;
 
         await gldData.save().catch((error) => { 
-            console.log(`[Utils refreshGuildStockChannel] Error while updating data :${error}`);
-            return;
+            console.error(`[Utils refreshGuildStockChannel] Error while updating data :${error}`);
         });
     } catch(error) {
-        console.log(`[Utils refreshGuildStockChannel]: ${error}`);
+        console.error(`[Utils refreshGuildStockChannel]: ${error}`);
     }
 
     return true;

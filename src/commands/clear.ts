@@ -24,7 +24,7 @@ export default {
 
             // Save the new data to the data base
             await usrData.save().catch((error) => {
-                console.log(`[Command /clear] Error while updating data :${error}`);
+                console.error(`[Command /clear] Error while updating data :${error}`);
                 return;
             });
             

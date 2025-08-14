@@ -34,7 +34,11 @@ export default {
             return;
         } 
 
-        user.send(message);
-        interaction.reply(`Message sent to ${user.tag}`);    
+        try {
+            await user.send(message);
+            interaction.reply(`Message sent to ${user.tag}`);
+        } catch (error) {
+            interaction.reply({ content: 'An error occurred while sending the message. ( bot blocked ? )', ephemeral: true });
+        }
     }
 }

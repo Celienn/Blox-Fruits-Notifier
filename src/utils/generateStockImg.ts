@@ -50,8 +50,8 @@ export default async (currStockArr: string[]) => {
             const i = currStockArr.indexOf(fruitIndex);
 
             if (!fruit) {
-                console.error(currStockArr);
-                console.log(`[Utils generateStockImg] Price for ${fruitIndex} not found.`);
+                console.log(currStockArr);
+                console.error(`[Utils generateStockImg] Price for ${fruitIndex} not found.`);
                 continue;
             }
 
@@ -73,7 +73,7 @@ export default async (currStockArr: string[]) => {
 
         return canvas.toBuffer();
     } catch (error) {
-        console.log(`[Utils generateStockImg]: ${error}`);
+        console.error(`[Utils generateStockImg]: ${error}`);
         throw error;
     }
 };

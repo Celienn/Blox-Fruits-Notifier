@@ -1,7 +1,8 @@
 import GuildData, { type IGuildData } from '../models/GuildData.js';
-import { Client, ChatInputCommandInteraction, type Channel, ChannelType } from 'discord.js';
+import { Client, ChatInputCommandInteraction, type Channel, ChannelType, type PermissionsString } from 'discord.js';
 import refreshStockChannel from '../utils/refreshGuildStockChannel.js';
 import type { Document } from 'mongoose';
+import { InteractionContextType } from 'discord.js';
 
 async function removeOldStockMessage(client: Client, data: Document<IGuildData>): Promise<Channel | void> { 
     const stockChannel = data.get('stockChannel');
@@ -31,6 +32,7 @@ export default {
     name: 'stockchannel',
     description: 'Set the channel where the current blox fruit stock will be shown',
     default_member_permissions: "0",
+    requiredPermissions: [] as PermissionsString[],
     options: [
         {
             type: 1,
@@ -52,6 +54,7 @@ export default {
             options: []
         }
     ],
+    contexts: [InteractionContextType.Guild],
     callback: async (client: Client, interaction: ChatInputCommandInteraction) => {
 
         const channel = interaction.options.getChannel('channel');
@@ -70,19 +73,19 @@ export default {
         }
 
         try {
-            let gldData = await GuildData.findOne(query);
+            let gldData = await GuildData.findOne(query) as Document<IGuildData>;
             
             if (!gldData) {
                 // Create an entry for the guild in the data base
                 gldData = new GuildData({
                     id: interaction.guild.id
-                })
+                }) as Document<IGuildData>;
             }
             
             if (removeValue) {  
                 // ? Would be better to delete the message after the data base is updated
                 const oldChannel = await removeOldStockMessage(client, gldData);
-                gldData.stockChannel = "";
+                gldData.set('stockChannel', "");
 
                 reply = (oldChannel) ? `Stock updates have been removed from <#${oldChannel.id}>.` : "Stock updates have been removed.";
             }else {
@@ -92,8 +95,8 @@ export default {
                 }
 
                 // Remove the old message if the channel provided is a new one
-                if (gldData.stockChannel !== channel.id) await removeOldStockMessage(client, gldData);
-                gldData.stockChannel = channel.id;
+                if (gldData.get('stockChannel') !== channel.id) await removeOldStockMessage(client, gldData);
+                gldData.set('stockChannel', channel.id);
 
                 reply = `Stock updates will now be sent in <#${channel.id}>.`;
             }
@@ -109,6 +112,7 @@ export default {
 
         } catch(error) {
             console.error(`[Command /stockchannel] Error while editing database for guild "${interaction.guild.id}": ${error}`)
+            reply = "Something went wrong.";
         }
         
         interaction.reply({

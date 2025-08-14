@@ -1,13 +1,14 @@
 import path from "path";
 import getAllFiles from "./getAllFiles.js";
 import getESMPaths from "./getESMPaths.js";
-import { Client, type ChatInputCommandInteraction, type ApplicationCommandData } from "discord.js";
+import { Client, type ChatInputCommandInteraction, type ApplicationCommandData, type PermissionsString } from "discord.js";
 
 const { __dirname } = getESMPaths(import.meta.url);
 
 export type CommandData = ApplicationCommandData & {
     description: string;
     test?: boolean;
+    requiredPermissions?: PermissionsString[];
     callback: (client: Client, interaction: ChatInputCommandInteraction) => Promise<void>;
 }
 

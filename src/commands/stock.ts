@@ -12,7 +12,11 @@ export default {
             
             interaction.reply({ files: [{ attachment: imgBuffer, name: 'stock.png' }] });
         } catch (error) {
-            console.log(`[Command /stock]: ${error}`);
+            console.error(`[Command /stock]: ${error}`);
+            interaction.reply({
+                content: "An error occurred :c .",
+                ephemeral: true,
+            });
         }
 
     },
