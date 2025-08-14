@@ -6,10 +6,6 @@ import stock from '../../utils/stockTime.js';
 import getCurrStock from '../../utils/getCurrentStock.js';
 var currStock: string[];
 
-(async () => {
-    currStock = await getCurrStock();
-})();
-
 // todo move some of those functions to utils
 async function refreshAllStockChannel(client: Client) {
     try {
@@ -29,7 +25,7 @@ async function refreshAllStockChannel(client: Client) {
 async function notifyPlayers(client: Client) {
     try {
         const UsersData = await UserData.find({})
-        if (!UsersData) return;
+        if (!UsersData) throw new Error("No user data found");
 
         usrDataLoop: for (const usrData of UsersData) {
             const user = client.users.cache.get(usrData.id);
@@ -40,7 +36,12 @@ async function notifyPlayers(client: Client) {
                     try{
                         user.send(`${fruit} is currently in stock`) // Todo improve the message
                     }catch (err) {
-                        // Bot probably blocked by the user
+                        // Bot blocked by the user or no longer in a guild in which the bot is.
+                        usrData.notify = false;
+                        usrData.save().catch(err => {
+                            console.error(`[Function notifyPlayers]: ${err}`);
+                        });
+                        console.log(`[Function notifyPlayers]: User ${user.id} has (probably) blocked the bot, notification disabled for this user.`);
                         continue usrDataLoop;
                     }
                 }
@@ -104,7 +105,11 @@ export async function checkForNewStock(client: Client, noretry=false) {
     }
 }
 
-export default (client: Client) => {
+export default async (client: Client) => {
+    while (!currStock || currStock.length === 0) {
+        currStock = await getCurrStock();
+    }
     refreshAllStockChannel(client);
-    setTimeout(() => {checkForNewStock(client)},secondsToWait()*1000);
+    refreshStockChannel(client, "0", currStock); // Pass the currStock to the module
+    setTimeout(() => {checkForNewStock(client)}, secondsToWait()*1000);
 };
