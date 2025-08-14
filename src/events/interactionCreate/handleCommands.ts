@@ -3,8 +3,6 @@ import getLocalCommands from "../../utils/commandUtils.js";
 
 const localCommands = await getLocalCommands();
 
-
-
 async function safeReply(interaction: ChatInputCommandInteraction, content: string) {
     try {
         if ((interaction as any)._replied || (interaction as any).deferred) {

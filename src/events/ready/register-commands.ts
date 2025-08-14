@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { REST, Routes, type RESTPostAPIApplicationCommandsResult } from "discord.js";
-import getLocalCommands, { type CommandStruct } from "../../utils/commandUtils.js";
+import getLocalCommands, { type CommandData } from "../../utils/commandUtils.js";
 import getToken from "../../utils/getToken.js";
 
 dotenv.config();
@@ -20,8 +20,8 @@ export default async () => {
             console.log(`Started refreshing ${commands.length} application (/) commands.`);
     
             // Splitting test and regular commands into different arrays
-            let testCommands: CommandStruct[] = [];
-            let globalCommands: CommandStruct[] = [];
+            let testCommands: CommandData[] = [];
+            let globalCommands: CommandData[] = [];
 
             for (const command of commands) {
                 if (!command) continue;
@@ -47,7 +47,7 @@ export default async () => {
 
             console.log(`Successfully reloaded ${test.length} application test (/) commands.`);
         } catch (error) {
-            console.log(`[Event register-commands] Error while registering commands: ${error}`);
+            console.error(`[Event register-commands] Error while registering commands: ${error}`);
         }
     })();
 }
