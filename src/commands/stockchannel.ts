@@ -120,9 +120,7 @@ export default {
             ephemeral: true,
         });
 
-        // Intentionally run every time , so that users can refresh the stock channel if there is a false positive
         refreshStockChannel(client, interaction.guild.id);
-
     }
 }
 

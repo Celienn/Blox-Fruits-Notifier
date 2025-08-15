@@ -1,9 +1,8 @@
 // UTC+0 time zone
 const refreshHours: number[] = [0, 4, 8, 12, 16, 20];
 
-// todo merge this and getCurrentStock
-export default {
-    nextHour : (): number => {
+const stock = {
+    nextHour: (): number => {
         const now = new Date();
         const currentHour = now.getHours();
 
@@ -14,7 +13,7 @@ export default {
 
         throw new Error("No next hour found in refresh hours");
     },
-    nextTimestamp : (): number => {
+    nextTimestamp: (): number => {
 
         const now = new Date();
         const currentHour = now.getUTCHours();
@@ -29,6 +28,15 @@ export default {
             now.setUTCHours(refreshHours[0] || 0,0,0,0);
         }
         
-        return now.getTime() / 1000;
+        return now.getTime();
     },
+    milisecondsToWait: () => {
+        const now = Math.floor(Date.now());
+        return stock.nextTimestamp() - now;
+    },
+    secondsToWait: () => {
+        return Math.floor(stock.milisecondsToWait() / 1000);
+    }
 };
+
+export default stock;

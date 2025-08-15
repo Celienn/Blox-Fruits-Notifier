@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import {Client, IntentsBitField} from "discord.js";
 import mongoose from "mongoose";
 import eventHandler from "./handlers/eventHandlers.js";
-import getToken from "./utils/getToken.js";
+import { APP_TOKEN, DB_URI } from "./utils/credentials.js";
 
 dotenv.config();
 
@@ -18,29 +18,23 @@ export default client;
 (async () => {
     try{
 
-        const uri: string | undefined = process.env["NODE_ENV"] === "production"
-          ? process.env["PROD_URI"]
-          : process.env["DEV_URI"];
-
-        if (!uri) {
+        if (!DB_URI) {
             console.error("❌ No MongoDB URI provided. Please set the PROD_URI or DEV_URI environment variable.");
             return;
         }
 
         mongoose.set('strictQuery', false);
-        await mongoose.connect(uri);
+        await mongoose.connect(DB_URI);
         console.log("✅ Connected to Database");
 
-        const token: string | undefined = getToken();
-
-        if (!token) {
+        if (!APP_TOKEN) {
             console.error("❌ No token provided. Please set the PROD_TOKEN or DEV_TOKEN environment variable.");
             return;
         }
 
         eventHandler(client);
 
-        client.login(token);
+        client.login(APP_TOKEN);
     } catch (error: unknown) {
         if (error instanceof Error) {
             console.error(`Error : ${error.message}`);

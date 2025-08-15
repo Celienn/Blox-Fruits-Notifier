@@ -1,19 +1,19 @@
-import dotenv from 'dotenv';
 import { REST, Routes, type RESTPostAPIApplicationCommandsResult } from "discord.js";
 import getLocalCommands, { type CommandData } from "../../utils/commandUtils.js";
-import getToken from "../../utils/getToken.js";
+import { APP_TOKEN, APP_ID } from "../../utils/credentials.js";
 
-dotenv.config();
-// todo finish converting to ESM
 export default async () => {
+
+    if (!APP_ID) {
+        console.error("❌ No Application ID provided. Please set the PROD_APP_ID or DEV_APP_ID environment variable.");
+        return;
+    }
+
     const commands = await getLocalCommands();
 
-    const rest = new REST({version: '10'}).setToken(getToken()!); // trust me bro
+    const rest = new REST({version: '10'}).setToken(APP_TOKEN!); // trust me bro
     
-    // todo add test to verify the client id is set and valid
-    const APP_ID = (process.env["NODE_ENV"] === "production") ?
-        process.env["PROD_APP_ID"]! :
-        process.env["DEV_APP_ID"]!;
+    // todo add test to verify the client id is valid
 
     (async () => {
         try{

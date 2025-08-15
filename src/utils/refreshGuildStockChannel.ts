@@ -30,9 +30,9 @@ const lastCommitDate = (async () => {
     return date ? new Date(date) : null;
 });
 
-export default async (client: Client, guildId: string, currStock: string[] = [""]) => {
+export default async (client: Client, guildId: string, currStock: string[] | null = null) => {
 
-    storedStock = (currStock.length === 1 && currStock[0] === "") ? storedStock : currStock;
+    storedStock = (!currStock) ? storedStock : currStock;
 
     const query = {
         id: guildId,
@@ -86,7 +86,7 @@ export default async (client: Client, guildId: string, currStock: string[] = [""
 
         fruitFields.push({
             name: ' ',
-            value: `Expires <t:${stock.nextTimestamp()}:R>`,
+            value: `Expires <t:${stock.secondsToWait()}:R>`,
             inline: false,
         })
         

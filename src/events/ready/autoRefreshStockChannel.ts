@@ -4,7 +4,11 @@ import GuildData from '../../models/GuildData.js';
 import refreshStockChannel from '../../utils/refreshGuildStockChannel.js';
 import stock from '../../utils/stockTime.js';
 import getCurrStock from '../../utils/getCurrentStock.js';
-var currStock: string[];
+var cachedStock: string[];
+
+export function getCachedStock(): string[] {
+    return cachedStock;
+}
 
 // todo move some of those functions to utils
 async function refreshAllStockChannel(client: Client) {
@@ -14,7 +18,7 @@ async function refreshAllStockChannel(client: Client) {
 
         for (const gldData of GuildsData) {
             if (!gldData) continue
-            refreshStockChannel(client, gldData.id, currStock);
+            refreshStockChannel(client, gldData.id, cachedStock);
         }
 
     } catch(error) {
@@ -30,7 +34,7 @@ async function notifyPlayers(client: Client) {
         usrDataLoop: for (const usrData of UsersData) {
             const user = client.users.cache.get(usrData.id);
             if (!user || !usrData.fruits || !usrData.notify) continue;
-            for (let fruit of currStock) {
+            for (let fruit of cachedStock) {
                 for (let usrFruit of usrData.fruits){
                     if (usrFruit != fruit) continue;
                     try{
@@ -53,10 +57,6 @@ async function notifyPlayers(client: Client) {
     }
 }
 
-function secondsToWait() {
-    const now = Math.floor(Date.now() / 1000); 
-    return stock.nextTimestamp() - now;
-}
 function arraysEqual(a: string[], b: string[]) {
     if (!a || !b) return false;
     if (a.length !== b.length) return false;
@@ -76,16 +76,16 @@ export async function checkForNewStock(client: Client, noretry=false) {
         return;
     }
 
-    let isDiff = !arraysEqual(currStock, newStock);
+    let isDiff = !arraysEqual(cachedStock, newStock);
 
     if(newStock.length === 0) isDiff = false;
 
     if (isDiff) {
         console.log(`New stock detected : ${newStock}`);
         // New stock detected 
-        currStock = newStock;
+        cachedStock = newStock;
         refreshAllStockChannel(client);
-        setTimeout(() => {checkForNewStock(client)},secondsToWait()*1000);
+        setTimeout(() => {checkForNewStock(client)}, stock.milisecondsToWait());
 
         // Double check in 45 minutes
         setTimeout(() => {
@@ -106,10 +106,10 @@ export async function checkForNewStock(client: Client, noretry=false) {
 }
 
 export default async (client: Client) => {
-    while (!currStock || currStock.length === 0) {
-        currStock = await getCurrStock();
+    while (!cachedStock || cachedStock.length === 0) {
+        cachedStock = await getCurrStock();
     }
     refreshAllStockChannel(client);
-    refreshStockChannel(client, "0", currStock); // Pass the currStock to the module
-    setTimeout(() => {checkForNewStock(client)}, secondsToWait()*1000);
+    refreshStockChannel(client, "0", cachedStock); // Pass the cachedStock to the module
+    setTimeout(() => {checkForNewStock(client)}, stock.milisecondsToWait());
 };

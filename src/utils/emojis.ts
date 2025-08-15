@@ -3,13 +3,8 @@ import fruits from "./fruits.js";
 import { ApplicationEmoji, Client } from "discord.js";
 import path from 'path';
 import getESMPaths from "./getESMPaths.js";
+import { APP_TOKEN, APP_ID } from "./credentials.js";
 
-const APP_ID = (process.env["NODE_ENV"] === "production") ?
-    process.env["PROD_APP_ID"]! :
-    process.env["DEV_APP_ID"]!;
-const APP_TOKEN = (process.env["NODE_ENV"] === "production") ?
-    process.env["PROD_TOKEN"]! :
-    process.env["DEV_TOKEN"]!;
 const fruitsNames = Object.keys(fruits);
 const { __dirname } = getESMPaths(import.meta.url);
 const folderPath = path.join(__dirname, "../../ressources/");

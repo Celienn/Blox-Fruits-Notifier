@@ -1,8 +1,8 @@
-import { ActionRowBuilder, StringSelectMenuBuilder, ButtonStyle, ButtonBuilder, ContainerBuilder, StringSelectMenuOptionBuilder, Client, type ChatInputCommandInteraction, MessageFlags, MessageComponentInteraction } from "discord.js";
+import { StringSelectMenuBuilder, ButtonStyle, ButtonBuilder, ContainerBuilder, StringSelectMenuOptionBuilder, Client, type ChatInputCommandInteraction, MessageFlags, MessageComponentInteraction } from "discord.js";
 import UserData from "../models/UserData.js";
 import fruits from "../utils/fruits.js";
 import emojis from "../utils/emojis.js";
-import { rarityByPrice, rarityColor as rColor } from "../utils/generateStockImg.js";
+import { rarityByPrice } from "../utils/generateStockImg.js";
 
 const fruitsNames: string[] = Object.keys(fruits);
 fruitsNames.reverse();
