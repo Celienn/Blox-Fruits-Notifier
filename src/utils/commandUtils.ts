@@ -5,6 +5,7 @@ import { Client, type ChatInputCommandInteraction, type ApplicationCommandData, 
 
 const { __dirname } = getESMPaths(import.meta.url);
 
+// ? Make it so "requiredPermissions" work on sub commands
 export type CommandData = ApplicationCommandData & {
     description: string;
     test?: boolean;

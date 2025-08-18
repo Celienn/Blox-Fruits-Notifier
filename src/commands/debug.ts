@@ -2,8 +2,8 @@ import { Client, type ChatInputCommandInteraction } from "discord.js";
 import emojis from "../utils/emojis.js";
 import GuildData from "../models/GuildData.js";
 import UserData from "../models/UserData.js";
-import { env } from "process";
-
+import { checkForNewStock, notifyUsers } from '../events/ready/autoRefreshStockChannel.js';
+import { refreshAllStockChannel } from "../events/ready/autoRefreshStockChannel.js";
 export default {
     name: 'debug',
     description: 'Command for debugging purposes',
@@ -27,6 +27,16 @@ export default {
         {
             name: 'clear-db',
             description: 'Clear the database',
+            type: 1
+        },
+        {
+            name: 'forcerefreshchannels',
+            description: 'Manually refresh all the stock channels.',
+            type: 1
+        },
+        {
+            name: 'notify-users',
+            description: 'Manually notify all users about the current stock (does not send automatics notifications faster)',
             type: 1
         }
     ],
@@ -96,6 +106,16 @@ export default {
                 });
 
                 break;
+            
+            case 'notify-users':
+                await notifyUsers(client);
+                interaction.reply({ content: "All users have been notified.", ephemeral: true });
+                break;
+
+            case "forcerefreshchannels":
+                await checkForNewStock(client, true);
+                refreshAllStockChannel(client)
+                interaction.reply({ content: "All stock channels have been refreshed.", ephemeral: true });
 
         }
     }

@@ -1,23 +1,24 @@
 import { createCanvas, loadImage } from 'canvas';
-import fruits, { type Fruit} from "./fruits.js";
+import fruits, { type Fruit, Rarity} from "./fruits.js";
 import getESMPaths from "./getESMPaths.js";
 
 const { __dirname } = getESMPaths(import.meta.url);
 
-export function rarityByPrice(price: number) : string {
-    if (price <= 180000 ) return 'Common'
-    if (price <= 600000 ) return 'Uncommon'
-    if (price <= 960000 ) return 'Rare'
-    if (price <= 2400000 ) return 'Legendary'
-    return 'Mythical'
+// todo use for unit tests
+export function rarityByPrice(price: number) : Rarity {
+    if (price <= 180000 ) return Rarity.Common;
+    if (price <= 600000 ) return Rarity.Uncommon;
+    if (price <= 960000 ) return Rarity.Rare;
+    if (price <= 2400000 ) return Rarity.Legendary;
+    return Rarity.Mythical;
 }
 
-export const rarityColor: Record<string, string> = {
-    "Common" : '#b3b3b3',
-    "Uncommon" : '#5c8cd3',
-    "Rare" : '#8c52ff',
-    "Legendary" : '#d52be4',
-    "Mythical" : '#ee2f32',
+export const rarityColor: Record<Rarity, string> = {
+    [Rarity.Common] : '#b3b3b3',
+    [Rarity.Uncommon] : '#5c8cd3',
+    [Rarity.Rare] : '#8c52ff',
+    [Rarity.Legendary] : '#d52be4',
+    [Rarity.Mythical] : '#ee2f32',
 }
 
 // TODO When more than 4 fruits create a new row of fruits
@@ -46,7 +47,7 @@ export default async (currStockArr: string[]) => {
 
 
         for (const fruitIndex of currStockArr) {
-            const fruit: Fruit | undefined = fruits[fruitIndex];
+            const fruit: Fruit | undefined = fruits.get(fruitIndex.toLowerCase());
             const i = currStockArr.indexOf(fruitIndex);
 
             if (!fruit) {
@@ -63,12 +64,12 @@ export default async (currStockArr: string[]) => {
             ctx.shadowColor = 'black';
             ctx.shadowBlur = 1.25 * 5;
             
-            ctx.fillStyle = rarityColor[ rarityByPrice(fruit.price) ] || '#ffffff';
+            ctx.fillStyle = rarityColor[fruit.rarity] || '#ffffff';
             let fruitName = fruit.name;
             ctx.fillText(fruitName, 20 + i * 95 + 40, 100);
 
             ctx.fillStyle = '#70ff39';
-            ctx.fillText("$" + fruit.priceStr, 20 + i * 95 + 40, 120);
+            ctx.fillText("$" + fruit.price.toLocaleString(), 20 + i * 95 + 40, 120);
         }
 
         return canvas.toBuffer();

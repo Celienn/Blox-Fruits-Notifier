@@ -5,7 +5,7 @@ import path from 'path';
 import getESMPaths from "./getESMPaths.js";
 import { APP_TOKEN, APP_ID } from "./credentials.js";
 
-const fruitsNames = Object.keys(fruits);
+const fruitList = fruits.list();
 const { __dirname } = getESMPaths(import.meta.url);
 const folderPath = path.join(__dirname, "../../ressources/");
 
@@ -18,18 +18,18 @@ export default {
     uploadAll: async function (client: Client) {
         if (!client.application) throw new Error("Client application is not available.");
         
-        for (const fruit of fruitsNames) {
-            const existingEmoji = emojiCache[fruit];
+        for (const fruit of fruitList) {
+            const name = fruit.name.toLowerCase();
+            const existingEmoji = emojiCache[name];
 
             if (existingEmoji) continue;
 
-            await client.application.emojis.create({ attachment: folderPath + fruit + ".png", name: fruit })
+            await client.application.emojis.create({ attachment: folderPath + name + ".png", name: name })
                 .then(emoji => {
                     console.log(`Emoji created: ${emoji.name}`);
-                    emojiCache[fruit] = emoji;
+                    emojiCache[name] = emoji;
                 })
-                .catch(error => console.error(`[Utils uploadEmojis] Error uploading emoji ${fruit}: ${error.message}`));
-        
+                .catch(error => console.error(`[Utils uploadEmojis] Error uploading emoji ${name}: ${error.message}`));
         }
     },
     // todo use discord.js ApplicationEmojiManager
@@ -59,6 +59,4 @@ export default {
     get: (emojiName: string): ApplicationEmoji | undefined => {
         return emojiCache[emojiName];
     }
-
-
 };

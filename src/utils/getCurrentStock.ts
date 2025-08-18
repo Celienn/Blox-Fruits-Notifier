@@ -1,6 +1,6 @@
 import axios from 'axios';
 import fruits from './fruits.js';
-const fruitNames = Object.keys(fruits);
+const fruitList = fruits.list();
 
 const url: string = 'https://blox-fruits.fandom.com/wiki/Blox_Fruits_"Stock"';
 
@@ -21,9 +21,9 @@ export default async () => {
             throw new Error('Error parsing stock data.');
         }
 
-        for (const fruit of fruitNames) {
-            const fruitIsInStock = page.includes(`>${fruit}<`);
-            if (fruitIsInStock) currentStock.push(fruit);
+        for (const fruit of fruitList) {
+            const fruitIsInStock = page.includes(`>${fruit.name.toLowerCase()}<`);
+            if (fruitIsInStock) currentStock.push(fruit.name.toLowerCase());
         }
 
         if (currentStock.length === 1) currentStock.unshift("rocket","spin");

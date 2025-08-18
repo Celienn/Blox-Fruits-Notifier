@@ -1,43 +1,42 @@
 import { StringSelectMenuBuilder, ButtonStyle, ButtonBuilder, ContainerBuilder, StringSelectMenuOptionBuilder, Client, type ChatInputCommandInteraction, MessageFlags, MessageComponentInteraction } from "discord.js";
 import UserData from "../models/UserData.js";
-import fruits from "../utils/fruits.js";
+import fruits, { type Fruit, Rarity } from "../utils/fruits.js";
 import emojis from "../utils/emojis.js";
-import { rarityByPrice } from "../utils/generateStockImg.js";
 
-const fruitsNames: string[] = Object.keys(fruits);
-fruitsNames.reverse();
+const fruitList: Fruit[] = fruits.list();
+fruitList.reverse();
 
-var choices: Record<string,StringSelectMenuOptionBuilder[]> = {
-    common: [],
-    uncommon: [],
-    rare: [],
-    legendary: [],
-    mythical: [],
+var choices: Record<Rarity,StringSelectMenuOptionBuilder[]> = {
+    [Rarity.Common]: [],
+    [Rarity.Uncommon]: [],
+    [Rarity.Rare]: [],
+    [Rarity.Legendary]: [],
+    [Rarity.Mythical]: [],
 };
 
-const rarityMsg: Record<string, string> = {
-    "common" : 'ansi\n\u001b[2;37m',
-    "uncommon" : 'ansi\n\u001b[2;34m',
-    "rare" : 'ansi\n\u001b[2;35m',
-    "legendary" : 'prolog\n',
-    "mythical" : 'ansi\n\u001b[2;31m',
+const rarityMsg: Record<Rarity, string> = {
+    [Rarity.Common] : 'ansi\n\u001b[2;37m',
+    [Rarity.Uncommon] : 'ansi\n\u001b[2;34m',
+    [Rarity.Rare] : 'ansi\n\u001b[2;35m',
+    [Rarity.Legendary] : 'prolog\n',
+    [Rarity.Mythical] : 'ansi\n\u001b[2;31m',
 }
 
 let initialized = false;
 export function initChoices() {
     if (initialized) return;
 
-    for (const fruit of fruitsNames) {
-        let label = fruit.charAt(0).toUpperCase() + fruit.slice(1);
-        let emoji = emojis.get(label.toLowerCase());
+    for (const fruit of fruitList) {
+        let name = fruit.name;
+        let emoji = emojis.get(name.toLowerCase());
 
-        if (!emoji || !fruits[fruit] || fruit === 'rocket' || fruit === 'spin') continue;
+        if (!emoji || name === 'Rocket' || name === 'Spin') continue;
         
-        let rarity = rarityByPrice(fruits[fruit].price).toLowerCase();
+        let rarity = fruit.rarity;
 
-        choices[rarity]?.push(new StringSelectMenuOptionBuilder()
-            .setLabel(label)
-            .setValue(fruit)
+        choices[rarity].push(new StringSelectMenuOptionBuilder()
+            .setLabel(name)
+            .setValue(name.toLowerCase())
             .setEmoji(emoji.id)
         );
     }
@@ -69,7 +68,7 @@ export default {
             return;
         }
 
-        const customChoices: Record<string, StringSelectMenuOptionBuilder[]> = {};
+        const customChoices: Record<Rarity, StringSelectMenuOptionBuilder[]> = {} as any;
         let container: ContainerBuilder = new ContainerBuilder();
 
         const query = {
@@ -93,17 +92,18 @@ export default {
             // skip unnecessary ones (e.g., if the user has no "common" fruits), and reduce the number of iterations.
 
             // Set default values for the select menu based on user data
-            for (const rarity in choices) { 
+            for (const rarity of Object.values(Rarity) as Rarity[]) { 
                 if (!choices[rarity]) continue;
                 customChoices[rarity] = [];
                 let tempUsrData = usrData.$clone();
-                for (const choice of choices[rarity]) {
 
+                for (const choice of choices[rarity]) {
+                    
                     for (let i = tempUsrData.fruits.length - 1; i >= 0; i--) {
-                        const dataFruit = tempUsrData.fruits[i];
+                        const dataFruitName = tempUsrData.fruits[i];
 
                         choice.setDefault(false);
-                        if (choice.data.value === dataFruit) {
+                        if (choice.data.value === dataFruitName) {
                             choice.setDefault(true);
                             tempUsrData.fruits.splice(i, 1); // Remove the fruit from array for optimisation purpose
                             break;
@@ -113,9 +113,10 @@ export default {
                     customChoices[rarity].push(choice);
 
                 }
+
                 const color = rarityMsg[rarity];
-                const rarityStr = rarity.slice(0, 1).toUpperCase() + rarity.slice(1);
-                
+                const rarityStr = rarity.toLocaleString().slice(0, 1).toUpperCase() + rarity.toLocaleString().slice(1);
+
                 container.addTextDisplayComponents(td => td.setContent("```" + color + rarityStr + " Fruits```"))
                 container.addActionRowComponents(row => {
                         row.addComponents(generateSelectMenu(`${rarity}`, customChoices[rarity] ?? [] /* typescript :D */) );
@@ -123,7 +124,7 @@ export default {
                     })
                 container.addSeparatorComponents(sep => sep.setDivider(true));
 
-                if (rarity === "mythical") {
+                if (rarity === Rarity.Mythical) {
                     container.addActionRowComponents(row => {
                         row.addComponents(
                             new ButtonBuilder()
@@ -160,14 +161,14 @@ export default {
                 // ! this is temporary code , until i change the database structure
                 const rarity = i.customId;
                 const newData = i.values;
-                for(const fruit of usrData.fruits) {
-                    const realFruit = fruits[fruit];
-                    if (!realFruit) continue; 
-                    if (rarityByPrice(realFruit.price).toLowerCase() !== rarity) continue;
+                for(const fruitName of usrData.fruits) {
+                    const fruit = fruits.get(fruitName.toLowerCase());
+                    if (!fruit) continue; 
+                    if (fruit.rarity.toLocaleString() !== rarity) continue;
                     // remove fruit from usrData
-                    usrData.fruits.splice(usrData.fruits.indexOf(fruit), 1);
+                    usrData.fruits.splice(usrData.fruits.indexOf(fruitName), 1);
                 }
-                usrData.fruits.push(...i.values);
+                usrData.fruits.push(...newData);
                 
                 await i.deferUpdate();
             }

@@ -1,25 +1,25 @@
 import { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, type StringSelectMenuInteraction , Client, type ChatInputCommandInteraction, BaseInteraction, CommandInteractionOptionResolver } from "discord.js";
 import UserData from "../models/UserData.js";
-import fruits from "../utils/fruits.js";
+import fruits, { type Fruit } from "../utils/fruits.js";
 import emojis from "../utils/emojis.js";
 
 const excludeList: string[] = process.env["EXCLUDE_FRUITS"]?.split(",") || [];
-const fruitsNames: string[] = Object.keys(fruits);
+const fruitList: Fruit[] = fruits.list();
 var choices: StringSelectMenuOptionBuilder[] = [];
 
 let initialized = false;
 export function initChoices() {
     if (initialized) return;
 
-    for (const fruit of fruitsNames) {
-        let label = fruit.charAt(0).toUpperCase() + fruit.slice(1);
-        let emoji = emojis.get(label.toLowerCase());
+    for (const fruit of fruitList) {
+        let name = fruit.name;
+        let emoji = emojis.get(name.toLowerCase());
 
-        if (!emoji || !fruits[fruit] || excludeList.includes(fruit)) continue;
+        if (!emoji || excludeList.includes(name.toLowerCase())) continue;
 
         choices.push(new StringSelectMenuOptionBuilder()
-            .setLabel(label)
-            .setValue(fruit)
+            .setLabel(name)
+            .setValue(fruit.name.toLowerCase())
             .setEmoji(emoji.id)
         );
     }

@@ -1,10 +1,7 @@
-import dotenv from 'dotenv';
 import {Client, IntentsBitField} from "discord.js";
 import mongoose from "mongoose";
 import eventHandler from "./handlers/eventHandlers.js";
 import { APP_TOKEN, DB_URI } from "./utils/credentials.js";
-
-dotenv.config();
 
 const client: Client = new Client({
     intents: [

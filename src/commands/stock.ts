@@ -1,5 +1,4 @@
-import stock from "../utils/getCurrentStock.js";
-import stockImg from "../utils/generateStockImg.js";
+import stock from "../utils/stock.js";
 import { Client, ChatInputCommandInteraction } from "discord.js";
 
 export default {
@@ -7,10 +6,7 @@ export default {
     description: 'Show the blox fruit dealer\'s current stock',
     callback: async (client: Client, interaction: ChatInputCommandInteraction) => {
         try {
-            const stockArr = await stock();
-            const imgBuffer = await stockImg(stockArr);
-            
-            interaction.reply({ files: [{ attachment: imgBuffer, name: 'stock.png' }] });
+            interaction.reply(stock.getUrl());
         } catch (error) {
             console.error(`[Command /stock]: ${error}`);
             interaction.reply({
