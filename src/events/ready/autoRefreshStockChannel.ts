@@ -33,7 +33,6 @@ export async function notifyUsers(client: Client) {
         usrDataLoop: for (const usrData of UsersData) {
             const user = client.users.cache.get(usrData.id);
             if (!user || !usrData.fruits || !usrData.notify) continue;
-            console.log(user,usrData.fruits, usrData.notify)
             for (let fruit of stock.get()) {
                 for (let usrFruit of usrData.fruits){
                     if (usrFruit != fruit.name.toLowerCase()) continue;
@@ -93,7 +92,7 @@ export async function checkForNewStock(client: Client, noretry=false) {
         console.log('New stock detected:', newStock.map(fruit => fruit.name).join(', '));
         // New stock detected 
         refreshAllStockChannel(client);
-        timeouts.push(setTimeout(() => { checkForNewStock(client) }, stock.milisecondsToWait()));
+        setTimeout(() => { checkForNewStock(client) }, stock.milisecondsToWait());
 
         // Double check in 45 minutes
         timeouts.push(setTimeout(async () => {
