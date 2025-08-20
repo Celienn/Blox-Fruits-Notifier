@@ -4,11 +4,11 @@
 
 npm run clean
 
-docker build -t bloxfruitnotifier-img .
+docker build -t bloxfruitsnotifier-img .
 
-docker stop bloxfruitnotifier
+docker stop bloxfruitsnotifier
 
-docker rm bloxfruitnotifier
+docker rm bloxfruitsnotifier
 
-docker run -d --restart always --name bloxfruitnotifier bloxfruitnotifier-img
+docker run -d --restart always --name bloxfruitsnotifier bloxfruitsnotifier-img
 
