@@ -90,7 +90,8 @@ export async function checkForNewStock(client: Client, noretry=false) {
 
     if (isDiff) {
         console.log('New stock detected:', newStock.map(fruit => fruit.name).join(', '));
-        // New stock detected 
+        // New stock detected
+        stock.setUrl(undefined);
         refreshAllStockChannel(client);
         setTimeout(() => { checkForNewStock(client) }, stock.milisecondsToWait());
 

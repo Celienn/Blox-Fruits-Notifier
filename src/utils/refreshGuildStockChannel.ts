@@ -120,6 +120,4 @@ export default async (client: Client, guildId: string) => {
     } catch(error) {
         console.error(`[Utils refreshGuildStockChannel]: ${error}`);
     }
-
-    return URL;
 };

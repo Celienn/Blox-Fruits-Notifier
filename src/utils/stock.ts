@@ -16,7 +16,7 @@ const rarityColor: Record<Rarity, string> = {
 }
 
 let cachedStock: Fruit[] = [];
-let url: string;
+let url: string | undefined;
 
 const stock = {
     get: (): Fruit[] => {
@@ -141,7 +141,6 @@ const stock = {
         }
     },
     setUrl : (newUrl: string | undefined) => {
-        if (!newUrl) return false;
         url = newUrl;
         return true;
     },
