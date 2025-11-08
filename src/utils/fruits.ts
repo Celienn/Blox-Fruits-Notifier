@@ -64,7 +64,7 @@ const fruits = {
     control:    { name: "Control",  price: 3200000,  priceStr: "3,200,000",  rarity: Rarity.Mythical },
     gas:        { name: "Gas",      price: 3200000,  priceStr: "3,200,000",  rarity: Rarity.Mythical },
     spirit:     { name: "Spirit",   price: 3400000,  priceStr: "3,400,000",  rarity: Rarity.Mythical },
-    leopard:    { name: "Leopard",  price: 5000000,  priceStr: "5,000,000",  rarity: Rarity.Mythical },
+    tiger:    { name: "Tiger",  price: 5000000,  priceStr: "5,000,000",  rarity: Rarity.Mythical },
     yeti:       { name: "Yeti",     price: 5000000,  priceStr: "5,000,000",  rarity: Rarity.Mythical },
     kitsune:    { name: "Kitsune",  price: 8000000,  priceStr: "8,000,000",  rarity: Rarity.Mythical },
     dragon:     { name: "Dragon",   price: 15000000, priceStr: "15,000,000", rarity: Rarity.Mythical },
