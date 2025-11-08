@@ -1,8 +1,9 @@
 import GuildData, { type IGuildData } from '../models/GuildData.js';
-import { Client, ChatInputCommandInteraction, type Channel, ChannelType, type PermissionsString } from 'discord.js';
+import { Client, ChatInputCommandInteraction, type Channel, ChannelType, type PermissionsString, TextChannel } from 'discord.js';
 import refreshStockChannel from '../utils/refreshGuildStockChannel.js';
 import type { Document } from 'mongoose';
 import { InteractionContextType } from 'discord.js';
+import checkBotPermissions from '../utils/checkBotPermissions.js';
 
 async function removeOldStockMessage(client: Client, data: Document<IGuildData>): Promise<Channel | void> { 
     const stockChannel = data.get('stockChannel');
@@ -27,7 +28,7 @@ async function removeOldStockMessage(client: Client, data: Document<IGuildData>)
     }
 }
 
-// * note very proud of my code but will do the job for now
+// * not very proud of my code but will do the job for now
 export default {
     name: 'stockchannel',
     description: 'Set the channel where the current blox fruit stock will be shown',
@@ -94,10 +95,15 @@ export default {
                     return;
                 }
 
+                if ( await checkBotPermissions(client, channel as TextChannel, 'SendMessages') === false ) {
+                    interaction.reply({ content: "I don't have permission to send messages in that channel.", ephemeral: true });
+                    return;
+                }
+
                 // Remove the old message if the channel provided is a new one
                 if (gldData.get('stockChannel') !== channel.id) await removeOldStockMessage(client, gldData);
                 gldData.set('stockChannel', channel.id);
-
+                
                 reply = `Stock updates will now be sent in <#${channel.id}>.`;
             }
 
