@@ -5,7 +5,7 @@ export default async function hasPermissions(client: Client, channel: GuildChann
 
     // Check if the channel exists
     if (!channel) {
-        console.log(`[Utils checkBotPermissions]: Channel is undefined.`);
+        console.warn(`[Utils checkBotPermissions]: Channel is undefined.`);
         return false;
     }
 
@@ -16,7 +16,7 @@ export default async function hasPermissions(client: Client, channel: GuildChann
     const botPermissions = channel.permissionsFor(bot);
 
     if (!botPermissions) {
-        console.log(`[Utils checkBotPermissions]: Unable to get permissions for bot in channel ${channel.id}.`);
+        console.warn(`[Utils checkBotPermissions]: Unable to get permissions for bot in channel ${channel.id}.`);
         return false;
     }
 

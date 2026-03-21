@@ -56,9 +56,20 @@ const stock = {
     },
     fetch: async (): Promise<Fruit[]> => {
         try {
-            const response = await axios.get(stockURL);
-
-            let page: string | undefined = response.data;
+            const response = await axios.get('https://blox-fruits.fandom.com/api.php', {
+                params: {
+                    action: 'parse',
+                    page: 'Blox_Fruits_"Stock"',
+                    format: 'json'
+                },
+                headers: {
+                    'User-Agent': 'Blox-Fruits-Notifier/1.0 (+https://github.com/Celienn)',
+                    Accept: 'application/json'
+                },
+                timeout: 10000
+            });
+            
+            let page: string | undefined = response.data?.parse?.text?.["*"];
             let currentStock: string[] = [];
 
             if (page === undefined || page.length === 0) {
@@ -114,7 +125,7 @@ const stock = {
 
                 if (!fruit.price) {
                     console.log(cachedStock);
-                    console.error(`[Utils generateStockImg] Price for ${fruit.name} not found.`);
+                    console.error(`[Utils stock.genImg] Price for ${fruit.name} not found.`);
                     continue;
                 }
 

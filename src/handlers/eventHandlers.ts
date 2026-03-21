@@ -24,7 +24,7 @@ export default function eventHandler(client: Client): void {
                 try {
                     await eventFunction(client, arg);
                 } catch (error) {
-                    console.error(`❌ Error in event handler for ${eventName} in file ${eventFile}:`, error);
+                    console.error(`❌ Error in event handler for ${eventName} in file ${eventFile}:\n`, error);
                 }
             }
         });
