@@ -1,3 +1,4 @@
+import "./utils/addDateToLogs.js";
 import {Client, IntentsBitField} from "discord.js";
 import mongoose from "mongoose";
 import eventHandler from "./handlers/eventHandlers.js";
